@@ -1,0 +1,1794 @@
+---
+title: "Getting Started with R"
+subtitle: "R Bootcamp — Day 1 Morning"
+author: "Joshua Lukemire"
+format:
+  revealjs:
+    theme: simple
+    slide-number: true
+    slide-level: 1
+    incremental: false
+    transition: fade
+    code-copy: true
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+<style>
+.reveal {
+  font-size: 26px;
+}
+
+.reveal .slides {
+  text-align: left;
+}
+
+.reveal h1 {
+  font-size: 1.5em;
+}
+
+.reveal h2 {
+  font-size: 1.15em;
+}
+
+.reveal h3 {
+  font-size: 1.0em;
+}
+
+.reveal p,
+.reveal li {
+  line-height: 1.22;
+}
+
+.reveal pre {
+  width: 100%;
+  margin-top: 0.3em;
+  margin-bottom: 0.3em;
+}
+
+.reveal pre code {
+  font-size: 1.28em;
+  line-height: 1.15;
+  max-height: 520px;
+}
+
+.reveal table {
+  font-size: 0.82em;
+  width: 100%;
+}
+
+.reveal td,
+.reveal th {
+  padding: 0.25em 0.45em;
+}
+
+.callout {
+  border-left: 5px solid #666;
+  padding-left: 0.7em;
+  margin-top: 0.7em;
+}
+
+.question {
+  border-left: 5px solid #999;
+  padding-left: 0.7em;
+  margin-top: 0.7em;
+  font-weight: 600;
+}
+
+.part {
+  font-size: 1.15em;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+</style>
+
+# About the Instructor
+
+## Joshua Lukemire, PhD
+
+Assistant Research Professor  
+Department of Biostatistics and Bioinformatics  
+Emory University
+
+### Research Interests
+
+- Neuroimaging
+- Bayesian statistics
+- Functional data analysis
+
+### Why I Use R
+
+I use R almost every day for:
+
+- Data cleaning and data management
+- Statistical analysis
+- Data visualization
+- Reproducible reporting
+- Method development and software tools
+
+# Welcome
+
+## Getting Started with R
+
+By lunch, you should be able to:
+
+- Open RStudio and run R code
+- Create objects and vectors
+- Recognize common data types
+- Understand R Projects and file paths
+- Work with data frames
+- Import CSV files using `here()`
+- Inspect a real public health dataset
+- Recognize base R and tidyverse workflows
+
+# Course Roadmap
+
+| Day | Main Theme | Core Skills |
+|---|---|---|
+| Day 1 | Data basics | RStudio, projects, data frames, importing data, data wrangling |
+| Day 2 | Exploring data and analysis | Visualization, exploratory analysis, descriptive summaries, fundamental testing and models |
+| Day 3 | Reporting | Quarto reports, reproducible workflows |
+
+<div class="callout">
+Today starts with core R concepts, then moves quickly toward tools used in applied data analysis.
+</div>
+
+# Today's Roadmap
+
+| Part | Topic |
+|---|---|
+| Part I | RStudio, Projects, and Reproducibility |
+| Part II | Objects and Data Types |
+| Part III | Vectors |
+| Part IV | Missing Values |
+| Part V | Data Frames |
+| Part VI | Packages and Importing Data |
+| Part VII | Oswego Mini-Investigation |
+| Part VIII | Looking Ahead to `dplyr` |
+
+# Common Challenges for New R Users
+
+Most beginners struggle with:
+
+1. File paths
+2. Missing values
+3. Understanding error messages
+
+These are normal parts of learning R.
+
+<div class="callout">
+If these three topics feel less intimidating by lunch, you have made meaningful progress.
+</div>
+
+# What This Course Is
+
+This course is a practical introduction to R for public health data analysis.
+
+We will focus on:
+
+- Reading and writing R code
+- Working with real datasets
+- Building reproducible workflows
+- Producing useful summaries, tables, and figures
+- Troubleshooting common errors
+
+<div class="callout">
+We are learning R. Public health datasets provide realistic examples.
+</div>
+
+# What This Course Is Not
+
+This course is not:
+
+- A complete statistics course
+- A machine learning course
+- A software engineering course
+- A tour of every R feature
+- A memorization exercise
+
+Instead, the goal is to become comfortable enough to open a dataset, ask a question, and write code that answers it.
+
+# Why Learn R?
+
+R is useful because it is:
+
+- Free and open source
+- Designed for statistics and data analysis
+- Widely used in public health, epidemiology, and biostatistics
+- Strong for data visualization
+- Strong for reproducible reporting
+- Supported by a large package ecosystem
+
+## Typical R Workflow
+
+```text
+Raw data → Clean data → Analysis → Figures/Tables → Report
+```
+
+# Public Health Questions Drive the Code
+
+Most analyses begin with a substantive question.
+
+Examples:
+
+- How many people became ill?
+- What proportion of attendees became ill?
+- Which exposure was most common among cases?
+- How do results differ across groups?
+- Can we reproduce the same answer later?
+
+R gives us a reproducible way to answer these questions.
+
+# A Preview of Where We Are Going
+
+This code may look unfamiliar now:
+
+```r
+library(tidyverse)
+library(here)
+
+oswego <- read_csv(
+  here("Data", "oswego.csv")
+)
+
+oswego %>%
+  filter(ill == "Yes") %>%
+  summarise(
+    mean_age = mean(age, na.rm = TRUE),
+    n_people = n()
+  )
+```
+
+By the end of today, this should feel much more readable.
+
+# Part I
+
+## RStudio, Projects, and Reproducibility
+
+<div class="part">Why organization matters before we write much code</div>
+
+# Part I Learning Goals
+
+By the end of this section, you should be able to:
+
+- Distinguish R from RStudio
+- Understand the Source, Console, Environment, and Files panes
+- Explain why scripts are preferable to working only in the Console
+- Understand what an R Project is
+- Understand working directories and project roots
+- Use `here()` to build project-based file paths
+- Diagnose common file import problems
+
+# R vs RStudio
+
+| Tool | What it is | What it does |
+|---|---|---|
+| R | Programming language | Executes R code |
+| RStudio | Development environment | Helps you write, run, organize, and debug code |
+
+## Useful Analogy
+
+- **R** is the engine.
+- **RStudio** is the dashboard.
+
+# RStudio Layout
+
+| Pane | Main Use |
+|---|---|
+| Source | Write and save scripts |
+| Console | Run commands interactively |
+| Environment | View objects currently in memory |
+| Files | Navigate project files |
+| Plots | View figures |
+| Help | Read documentation |
+
+<div class="callout">
+The most important panes are Source, Console, Environment, and Files.
+</div>
+
+# Console vs Script
+
+## Console
+
+Good for quick tests:
+
+```r
+2 + 2
+sqrt(25)
+```
+
+But Console commands are not automatically saved.
+
+## Script
+
+Good for reproducible work:
+
+```r
+cases <- c(5, 10, 12)
+mean(cases)
+```
+
+Scripts can be saved, edited, rerun, and shared.
+
+# Why Scripts Matter
+
+A script is a record of your analysis.
+
+A good script lets you:
+
+- Re-run the same analysis later
+- Correct mistakes
+- Share work with colleagues
+- Document exactly how results were produced
+- Avoid manually repeating point-and-click steps
+
+<div class="callout">
+If a result matters, the code that produced it should be saved.
+</div>
+
+# R Projects
+
+An R Project is a folder-based workspace for an analysis.
+
+A project usually contains:
+
+```text
+Project/
+  Data/
+  Scripts/
+  Output/
+  Project.Rproj
+```
+
+The `.Rproj` file tells RStudio:
+
+> This folder is the home base for this analysis.
+
+# Why Use R Projects?
+
+R Projects help with:
+
+- File organization
+- Reproducibility
+- Collaboration
+- Avoiding working-directory confusion
+- Keeping related files together
+
+Without a project, people often spend unnecessary time fighting file paths.
+
+# Recommended Project Structure
+
+For this bootcamp, we will use a structure like:
+
+```text
+R_Bootcamp/
+  Data/
+    oswego.csv
+    cases.csv
+    labs.csv
+    vaccination.csv
+  Scripts/
+    day1_morning.R
+    day1_afternoon.R
+  Output/
+  R_Bootcamp.Rproj
+```
+
+This structure lets us write stable file paths from the project root.
+
+# Opening the Project
+
+Recommended workflow:
+
+1. Find the `.Rproj` file
+2. Double-click it
+3. Confirm that RStudio opens the project
+4. Work inside that project window
+
+When the project is open, RStudio knows where the analysis lives.
+
+# Working Directory
+
+The working directory is the folder R uses as its current starting location.
+
+Check it with:
+
+```r
+getwd()
+```
+
+List files there with:
+
+```r
+list.files()
+```
+
+If your working directory is not what you expect, file import often fails.
+
+# The Project Root
+
+When you open an R Project, the project folder becomes the natural home base for the analysis.
+
+For this bootcamp:
+
+```text
+here()
+```
+
+will point to the folder directly above `Data`.
+
+That means this path:
+
+```r
+here("Data", "oswego.csv")
+```
+
+points to:
+
+```text
+Project/Data/oswego.csv
+```
+
+# Why We Will Use `here()`
+
+The `here` package helps build file paths from the project root.
+
+```r
+library(here)
+
+here("Data", "oswego.csv")
+```
+
+Advantages:
+
+- Works across different computers
+- Avoids hard-coded personal paths
+- Makes scripts easier to share
+- Reduces working-directory confusion
+
+# Hard-Coded Paths Are Fragile
+
+Avoid paths like:
+
+```r
+read_csv(
+  "/Users/josh/Desktop/R_Bootcamp/Data/oswego.csv"
+)
+```
+
+This may work on one computer but fail on another.
+
+Prefer:
+
+```r
+read_csv(
+  here("Data", "oswego.csv")
+)
+```
+
+This works as long as the project structure is consistent.
+
+# File Path Troubleshooting
+
+Useful commands:
+
+```r
+getwd()
+
+list.files()
+
+list.files("Data")
+
+here::here()
+```
+
+Common problems:
+
+| Problem | Meaning |
+|---|---|
+| File not found | R is looking in the wrong folder |
+| Wrong capitalization | `Data` is not the same as `data` on some systems |
+| Misspelled filename | File path does not match file name |
+| Project not open | `here()` may point somewhere unexpected |
+
+# Getting Help
+
+R has built-in help files:
+
+```r
+?mean
+?read_csv
+?here
+```
+
+You can search help files:
+
+```r
+help.search("linear model")
+```
+
+When reading help, focus on:
+
+- What the function does
+- Main arguments
+- Examples near the bottom
+
+<div class="callout">
+Help files can feel technical at first. That is normal.
+</div>
+
+# Checkpoint: RStudio and Projects
+
+## You should now be able to:
+
+- Distinguish R from RStudio
+- Explain why scripts are important
+- Recognize the purpose of an R Project
+- Understand working directories and project roots
+- Use `here()` to build file paths
+
+## Key ideas
+
+- Save important work in scripts.
+- Open the `.Rproj` file before starting.
+- Prefer project-relative paths.
+- Most import problems are file path problems.
+
+<div class="question">
+Questions before we continue?
+</div>
+
+# Part II
+
+## Objects and Data Types
+
+<div class="part">The basic building blocks of R code</div>
+
+# Part II Learning Goals
+
+By the end of this section, you should be able to:
+
+- Recognize function calls
+- Create objects
+- Understand assignment with `<-`
+- Use meaningful object names
+- Recognize numeric, character, and logical values
+- Understand when text values require quotes
+
+# Functions
+
+## Purpose
+
+Functions perform actions.
+
+## General Syntax
+
+```r
+function_name(argument1, argument2 = value)
+```
+
+## Examples
+
+```r
+sqrt(25)
+
+mean(c(1, 2, 3))
+
+round(3.14159, digits = 2)
+```
+
+| Function | Purpose |
+|---|---|
+| `sqrt()` | Square root |
+| `mean()` | Average |
+| `round()` | Round numbers |
+
+# Function Arguments
+
+Arguments control what a function does.
+
+```r
+round(3.14159, digits = 2)
+```
+
+Here:
+
+- `3.14159` is the number being rounded
+- `digits = 2` controls the number of decimal places
+
+Later, we will use arguments like:
+
+```r
+na.rm = TRUE
+```
+
+to control how missing values are handled.
+
+# Exercise 1: First Commands
+
+Run the following commands:
+
+```r
+sqrt(144)
+
+log(100)
+
+round(3.14159, digits = 2)
+
+mean(c(5, 10, 15))
+```
+
+Then try changing the inputs.
+
+<div class="question">
+Questions: What changes when you change the numbers? What happens if you forget a parenthesis?
+</div>
+
+# Objects
+
+## Purpose
+
+Objects store values so we can reuse them later.
+
+```r
+cases <- 15
+```
+
+Read this as:
+
+```text
+Assign cases a value of 15
+```
+
+To view the value:
+
+```r
+cases
+```
+
+<div class="callout">
+Almost everything in R involves creating, inspecting, or modifying objects.
+</div>
+
+# Assignment Operator
+
+The traditional R assignment operator is:
+
+```r
+<-
+```
+
+Example:
+
+```r
+cases <- 15
+```
+
+You may also see:
+
+```r
+cases = 15
+```
+
+Both often work, but `<-` is very common in R examples and teaching materials.
+
+# Object Names
+
+Use names that describe the content.
+
+| Better | Less helpful |
+|---|---|
+| `daily_cases` | `x` |
+| `county_name` | `thing` |
+| `attack_rate` | `ar` |
+
+## Naming Tips
+
+- Use lowercase letters
+- Separate words with underscores
+- Avoid spaces
+- Avoid names that start with numbers
+- Avoid overwriting common function names like `mean` or `data`
+
+# Basic Data Types
+
+| Type | Example | Meaning |
+|---|---|---|
+| Numeric | `42`, `3.14` | Numbers |
+| Character | `"Fulton"` | Text |
+| Logical | `TRUE`, `FALSE` | True/false values |
+
+```r
+age <- 42
+county <- "Fulton"
+ill <- TRUE
+```
+
+# Character Values Need Quotes
+
+Correct:
+
+```r
+county <- "Fulton"
+```
+
+Incorrect:
+
+```r
+county <- Fulton
+```
+
+Without quotes, R looks for an object named `Fulton`.
+
+This is a very common error.
+
+# Logical Values
+
+Logical values are especially useful for filtering and comparisons.
+
+```r
+TRUE
+FALSE
+```
+
+Examples:
+
+```r
+ill <- TRUE
+vaccinated <- FALSE
+```
+
+Important distinction:
+
+```r
+TRUE     # logical
+"TRUE"   # character text
+```
+
+Logical values often arise from comparisons:
+
+```r
+age > 18
+ill == TRUE
+```
+
+# Exercise 2: Create Objects
+
+Create three objects:
+
+```r
+age <- 35
+county <- "Fulton"
+ill <- TRUE
+```
+
+Then print each object:
+
+```r
+age
+county
+ill
+```
+
+Try changing the values.
+
+<div class="question">
+Question: What happens if you remove the quotes around the county name?
+</div>
+
+# Checkpoint: Objects and Data Types
+
+## You should now be able to:
+
+- Create objects with `<-`
+- Print objects by typing their names
+- Recognize numeric, character, and logical values
+- Use quotes around character values
+- Interpret simple function calls
+
+## Key ideas
+
+- Objects store information for later use.
+- Character values require quotes.
+- Logical values are `TRUE` and `FALSE`.
+- Many errors at this stage are spelling mistakes, missing quotes, or missing parentheses.
+
+<div class="question">
+Questions before we continue?
+</div>
+
+# Part III
+
+## Vectors
+
+<div class="part">Storing and working with multiple values</div>
+
+# Part III Learning Goals
+
+By the end of this section, you should be able to:
+
+- Create vectors with `c()`
+- Recognize numeric, character, and logical vectors
+- Apply operations to vectors
+- Use common summary functions
+- Understand why vectors matter for data frames
+
+# Vectors
+
+## Purpose
+
+A vector stores multiple values.
+
+```r
+daily_cases <- c(3, 5, 7, 8, 12)
+```
+
+The `c()` function combines values into a vector.
+
+## Why Vectors Matter
+
+Columns in data frames are usually vectors.
+
+```r
+ages <- c(24, 31, 45, 52)
+counties <- c("Fulton", "DeKalb", "Cobb")
+ill_status <- c(TRUE, FALSE, TRUE)
+```
+
+# Vector Operations
+
+R often applies operations to every element of a vector.
+
+```r
+daily_cases <- c(3, 5, 7, 8, 12)
+
+daily_cases + 1
+daily_cases * 2
+daily_cases / 7
+```
+
+This is called vectorization.
+
+<div class="callout">
+You often do not need a loop for simple operations on a vector.
+</div>
+
+# Summary Functions for Vectors
+
+| Function | Purpose | Example |
+|---|---|---|
+| `sum()` | Total | `sum(daily_cases)` |
+| `mean()` | Average | `mean(daily_cases)` |
+| `median()` | Median | `median(daily_cases)` |
+| `min()` | Minimum | `min(daily_cases)` |
+| `max()` | Maximum | `max(daily_cases)` |
+| `length()` | Number of values | `length(daily_cases)` |
+
+These functions are commonly used in early data checks.
+
+# Exercise 3: Vectors
+
+Create:
+
+```r
+weekly_cases <- c(12, 15, 9, 18, 22, 25)
+```
+
+Compute:
+
+```r
+sum(weekly_cases)
+mean(weekly_cases)
+max(weekly_cases)
+length(weekly_cases)
+```
+
+<div class="question">
+Question: Which function answers “how many values are in the vector?”
+</div>
+
+# Checkpoint: Vectors
+
+## You should now be able to:
+
+- Create a vector using `c()`
+- Apply arithmetic to a vector
+- Use `sum()`, `mean()`, `max()`, and `length()`
+- Explain why vectors matter for data analysis
+
+## Key ideas
+
+- Vectors store multiple values.
+- R often works element-by-element.
+- Many data frame columns are vectors.
+
+<div class="question">
+Questions before we continue?
+</div>
+
+# Part IV
+
+## Missing Values
+
+<div class="part">Understanding `NA` before working with real datasets</div>
+
+# Part IV Learning Goals
+
+By the end of this section, you should be able to:
+
+- Recognize missing values as `NA`
+- Understand why missing values affect summaries
+- Use `na.rm = TRUE`
+- Explain why `NA` is not the same as zero
+
+# Missing Values
+
+Real datasets often contain missing values.
+
+R represents missing values as:
+
+```r
+NA
+```
+
+Example:
+
+```r
+temperature <- c(99.1, 100.2, NA, 98.6)
+```
+
+Important:
+
+- `NA` means missing or unknown
+- `NA` is not the same as zero
+- Many summary functions return `NA` if missing values are present
+
+# Missing Values in Summaries
+
+What happens?
+
+```r
+temperature <- c(99.1, 100.2, NA, 98.6)
+
+mean(temperature)
+```
+
+R returns `NA`.
+
+To ignore missing values:
+
+```r
+mean(temperature, na.rm = TRUE)
+```
+
+Read `na.rm = TRUE` as:
+
+```text
+remove missing values before calculating
+```
+
+# Reference: `mean()`
+
+## Purpose
+
+Compute the arithmetic mean of a numeric vector.
+
+## Syntax
+
+```r
+mean(x)
+```
+
+## Common Option
+
+```r
+mean(x, na.rm = TRUE)
+```
+
+## Example
+
+```r
+cases <- c(5, 10, NA, 20)
+
+mean(cases, na.rm = TRUE)
+```
+
+## Common Issue
+
+If `x` contains `NA`, `mean(x)` returns `NA`.
+
+# Exercise 4: Vectors and Missing Values
+
+Create:
+
+```r
+weekly_cases <- c(12, 15, 9, 18, NA, 22, 25)
+```
+
+Compute:
+
+```r
+sum(weekly_cases, na.rm = TRUE)
+mean(weekly_cases, na.rm = TRUE)
+max(weekly_cases, na.rm = TRUE)
+length(weekly_cases)
+```
+
+<div class="question">
+Questions: Why do some functions need `na.rm = TRUE`? Does `length()` count the missing value?
+</div>
+
+# Checkpoint: Missing Values
+
+## You should now be able to:
+
+- Recognize `NA` as a missing value
+- Explain why `mean(x)` can return `NA`
+- Use `na.rm = TRUE`
+- Avoid treating missing values as zero
+
+## Key ideas
+
+- Missing values are common in real data.
+- `NA` means unknown, not zero.
+- Many summary functions need `na.rm = TRUE`.
+
+<div class="question">
+Questions before we continue?
+</div>
+
+# Part V
+
+## Data Frames
+
+<div class="part">Moving from vectors to rectangular datasets</div>
+
+# Part V Learning Goals
+
+By the end of this section, you should be able to:
+
+- Explain rows, columns, and cells
+- Create a simple data frame
+- Inspect a data frame
+- Access columns with `$`
+- Count categories using `table()`
+- Recognize basic base R row filtering
+
+# Data Frames
+
+## Purpose
+
+A data frame stores a rectangular dataset.
+
+| Concept | Meaning |
+|---|---|
+| Row | Observation |
+| Column | Variable |
+| Cell | Value |
+
+Examples:
+
+- One row per person in a line list
+- One row per county in a public health dataset
+- One row per lab result in a testing dataset
+
+# Example: Small Line List
+
+```r
+line_list <- data.frame(
+  id = c(1, 2, 3),
+  age = c(23, 41, 18),
+  sex = c("F", "M", "F"),
+  ill = c(TRUE, FALSE, TRUE)
+)
+```
+
+This creates:
+
+- 3 rows
+- 4 columns
+- One row per person
+- Variables for ID, age, sex, and illness status
+
+# First Checks for Any Data Frame
+
+Use these commands whenever you first open a dataset.
+
+```r
+head(line_list)
+summary(line_list)
+str(line_list)
+names(line_list)
+dim(line_list)
+```
+
+| Function | What it tells you |
+|---|---|
+| `head()` | First rows |
+| `summary()` | Quick summaries |
+| `str()` | Structure and variable types |
+| `names()` | Column names |
+| `dim()` | Rows and columns |
+
+# Accessing Columns
+
+Use `$` to access one variable in a data frame.
+
+```r
+line_list$age
+line_list$sex
+line_list$ill
+```
+
+Then apply functions:
+
+```r
+mean(line_list$age)
+
+table(line_list$sex)
+
+table(line_list$ill)
+```
+
+Pattern:
+
+```r
+data_frame$variable_name
+```
+
+# Counting Categories with `table()`
+
+`table()` counts how often values appear.
+
+```r
+table(line_list$sex)
+
+table(line_list$ill)
+```
+
+Useful for categorical variables:
+
+- Sex
+- County
+- Illness status
+- Exposure status
+- Vaccination status
+
+<div class="callout">
+`table()` is a common base R function you will see in many older scripts and examples.
+</div>
+
+# Base R Row Filtering
+
+Base R can filter rows using brackets.
+
+```r
+line_list[line_list$ill == TRUE, ]
+```
+
+Read this as:
+
+```text
+From line_list, keep rows where ill is TRUE.
+```
+
+General form:
+
+```r
+data_frame[rows, columns]
+```
+
+This syntax is common, but we will mostly use `filter()` later.
+
+# Exercise 5: Data Frames
+
+Using `line_list`, answer:
+
+1. How many people are in the line list?
+2. What is the average age?
+3. How many people became ill?
+4. Which rows correspond to people who became ill?
+
+Useful code:
+
+```r
+nrow(line_list)
+mean(line_list$age)
+table(line_list$ill)
+line_list[line_list$ill == TRUE, ]
+```
+
+# Base R vs Tidyverse
+
+You will encounter two common R styles.
+
+| Style | Example |
+|---|---|
+| Base R | `table(line_list$ill)` |
+| Tidyverse | `line_list %>% count(ill)` |
+
+Both are valid.
+
+Our strategy:
+
+- Learn enough base R to understand common code
+- Use tidyverse for most data manipulation and visualization
+
+# Common Tasks: Base R and Tidyverse
+
+| Task | Base R | Tidyverse |
+|---|---|---|
+| Read CSV | `read.csv()` | `read_csv()` |
+| Count values | `table(df$x)` | `df %>% count(x)` |
+| Keep rows | `df[df$x > 5, ]` | `df %>% filter(x > 5)` |
+| Create variable | `df$z <- df$x + df$y` | `df %>% mutate(z = x + y)` |
+| Group summary | `aggregate()` | `group_by()` + `summarise()` |
+
+<div class="callout">
+The tidyverse code is often easier to read as a sequence of data analysis steps.
+</div>
+
+# Checkpoint: Data Frames
+
+## You should now be able to:
+
+- Explain rows and columns
+- Create a small data frame
+- Inspect a data frame with `head()`, `summary()`, `str()`, and `names()`
+- Access columns with `$`
+- Count categories with `table()`
+
+## Key ideas
+
+- Most real analyses start with a data frame.
+- Always inspect a dataset before analyzing it.
+- Base R and tidyverse are two common styles.
+
+<div class="question">
+Questions before we load a real dataset?
+</div>
+
+# Part VI
+
+## Packages and Importing Data
+
+<div class="part">Bringing external data into an R Project</div>
+
+# Part VI Learning Goals
+
+By the end of this section, you should be able to:
+
+- Explain what R packages do
+- Distinguish installing from loading packages
+- Load `tidyverse` and `here`
+- Import a CSV file using `read_csv()`
+- Use `here("Data", "...")` to build file paths
+- Inspect imported data
+
+# Packages
+
+Packages add tools to R.
+
+| Package | Purpose |
+|---|---|
+| `readr` | Import rectangular data |
+| `dplyr` | Data manipulation |
+| `ggplot2` | Visualization |
+| `tidyr` | Reshaping data |
+| `tibble` | Modern data frames |
+| `here` | Stable project-based file paths |
+
+Most of the first four are included in the `tidyverse`.
+
+# Installing vs Loading Packages
+
+Install once:
+
+```r
+install.packages("tidyverse")
+install.packages("here")
+```
+
+Load every new R session:
+
+```r
+library(tidyverse)
+library(here)
+```
+
+Common beginner issue:
+
+```text
+I installed it yesterday. Why doesn't R know the function today?
+```
+
+Because installing and loading are different.
+
+# Loading Packages for This Course
+
+At the start of most scripts, we will use:
+
+```r
+library(tidyverse)
+library(here)
+```
+
+This gives us:
+
+- `read_csv()` for importing data
+- `%>%`, `filter()`, `mutate()`, and other data wrangling tools
+- `ggplot()` for visualization
+- `here()` for project-based paths
+
+# CSV Files and `read_csv()`
+
+CSV files are common rectangular data files.
+
+## Tidyverse
+
+```r
+read_csv("Data/oswego.csv")
+```
+
+## Base R
+
+```r
+read.csv("Data/oswego.csv")
+```
+
+We will mainly use `read_csv()` because it works naturally with tidyverse workflows.
+
+# Preferred Import Pattern
+
+For this bootcamp, prefer:
+
+```r
+library(tidyverse)
+library(here)
+
+oswego <- read_csv(
+  here("Data", "oswego.csv")
+)
+```
+
+This is more robust than:
+
+```r
+oswego <- read_csv("Data/oswego.csv")
+```
+
+because `here()` explicitly starts from the project root.
+
+# Loading the Oswego Dataset
+
+In your script:
+
+```r
+library(tidyverse)
+library(here)
+
+oswego <- read_csv(
+  here("Data", "oswego.csv")
+)
+```
+
+Then inspect it:
+
+```r
+head(oswego)
+
+str(oswego)
+
+summary(oswego)
+
+names(oswego)
+```
+
+<div class="callout">
+Always inspect a dataset before analyzing it.
+</div>
+
+# Checkpoint: Packages and Importing Data
+
+## You should now be able to:
+
+- Load packages with `library()`
+- Explain why installing and loading are different
+- Import a CSV file with `read_csv()`
+- Use `here()` to locate files inside an R Project
+- Inspect imported data
+
+## Key ideas
+
+- Put data files in a consistent folder.
+- Use `here("Data", "file.csv")` for project-relative paths.
+- If data import fails, check the project, path, spelling, and capitalization.
+
+<div class="question">
+Questions before we investigate the Oswego dataset?
+</div>
+
+# Part VII
+
+## Oswego Mini-Investigation
+
+<div class="part">Using R to answer basic questions from a real outbreak dataset</div>
+
+# Part VII Learning Goals
+
+By the end of this section, you should be able to:
+
+- Inspect a real dataset
+- Count illness status
+- Compute simple proportions
+- Summarize age
+- Check variable names and coding
+- Recognize how data coding affects analysis
+
+# The Oswego Outbreak Dataset
+
+The Oswego dataset is a classic outbreak investigation teaching dataset.
+
+It includes information on attendees of a supper in Oswego County, New York, including:
+
+- Illness status
+- Symptoms
+- Symptom onset time
+- Food exposures
+
+# First Questions for Any Dataset
+
+When opening a dataset, ask:
+
+1. How many rows?
+2. How many columns?
+3. What are the variable names?
+4. What are the variable types?
+5. Are there missing values?
+6. Do values look plausible?
+
+Useful commands:
+
+```r
+nrow(oswego)
+ncol(oswego)
+names(oswego)
+str(oswego)
+summary(oswego)
+```
+
+# Public Health Question: How Many Became Ill?
+
+Use `table()` to count illness status.
+
+```r
+table(oswego$ill)
+```
+
+Illness might be coded as:
+
+| Coding | Example |
+|---|---|
+| Text | `"Yes"` / `"No"` |
+| Logical | `TRUE` / `FALSE` |
+| Numeric | `1` / `0` |
+
+<div class="callout">
+Always check coding before calculating summaries.
+</div>
+
+# Public Health Question: What Proportion Became Ill?
+
+If `ill` is coded `"Yes"` / `"No"`:
+
+```r
+mean(oswego$ill == "Yes")
+```
+
+If `ill` is coded `TRUE` / `FALSE`:
+
+```r
+mean(oswego$ill)
+```
+
+If `ill` is coded `1` / `0`:
+
+```r
+mean(oswego$ill == 1)
+```
+
+The general idea is:
+
+```text
+convert illness status to TRUE/FALSE, then average
+```
+
+# Public Health Question: Average Age
+
+```r
+mean(oswego$age, na.rm = TRUE)
+
+median(oswego$age, na.rm = TRUE)
+
+range(oswego$age, na.rm = TRUE)
+```
+
+These answer different questions:
+
+| Function | Question |
+|---|---|
+| `mean()` | Average age |
+| `median()` | Middle age |
+| `range()` | Minimum and maximum age |
+
+# Public Health Question: Food Exposure
+
+Suppose the dataset has a variable for vanilla ice cream exposure.
+
+First check variable names:
+
+```r
+names(oswego)
+```
+
+Then count exposure status:
+
+```r
+table(oswego$vanilla)
+```
+
+General workflow:
+
+1. Check variable name
+2. Check coding
+3. Summarize values
+4. Interpret in context
+
+# Mini Investigation
+
+Using the Oswego dataset, answer:
+
+1. How many people are in the dataset?
+2. How many became ill?
+3. What proportion became ill?
+4. What is the mean age?
+5. What is the median age?
+6. What food exposure variables are available?
+7. How many people were exposed to one selected food?
+
+Useful commands:
+
+```r
+nrow(oswego)
+names(oswego)
+table(oswego$ill)
+mean(oswego$age, na.rm = TRUE)
+median(oswego$age, na.rm = TRUE)
+```
+
+# Mini Investigation: Example Solution
+
+Your exact code may vary depending on variable names and coding.
+
+```r
+nrow(oswego)
+
+names(oswego)
+
+table(oswego$ill)
+
+mean(oswego$ill == TRUE)
+
+mean(oswego$age, na.rm = TRUE)
+
+median(oswego$age, na.rm = TRUE)
+
+table(oswego$vanilla)
+```
+
+If illness is coded `1` / `0`, use:
+
+```r
+mean(oswego$ill == 1)
+```
+
+# Common Errors
+
+| Error Type | Example | Usual Cause |
+|---|---|---|
+| Object not found | `mean(age)` | `age` is inside a data frame |
+| Misspelled object | `osweog` | Typo |
+| Misspelled column | `oswego$agge` | Typo |
+| Missing quotes | `county <- Fulton` | R looks for object `Fulton` |
+| File not found | `read_csv("oswego.csv")` | Wrong path |
+| Function not found | `read_csv()` | Package not loaded |
+
+# Debugging Checklist
+
+When something breaks:
+
+1. Read the full error message
+2. Check spelling
+3. Check whether the object exists
+4. Check whether the package is loaded
+5. Check the file path
+6. Check whether the R Project is open
+7. Run the code one line at a time
+8. Ask: what object does this line use or create?
+
+Useful commands:
+
+```r
+ls()
+names(oswego)
+str(oswego)
+getwd()
+list.files()
+here::here()
+```
+
+# Checkpoint: Oswego Mini-Investigation
+
+## You should now be able to:
+
+- Load and inspect a real dataset
+- Count categories with `table()`
+- Compute simple proportions with `mean()`
+- Summarize numeric variables
+- Check variable names and coding before analyzing
+
+## Key ideas
+
+- Always inspect the data first.
+- Coding matters: `"Yes"`, `TRUE`, and `1` are not the same.
+- Simple summaries can answer real public health questions.
+
+<div class="question">
+Questions before we preview the afternoon material?
+</div>
+
+# Part VIII
+
+## Looking Ahead to `dplyr`
+
+<div class="part">A more readable way to express data analysis steps</div>
+
+# Tidyverse Teaser: Counting
+
+Base R:
+
+```r
+table(oswego$ill)
+```
+
+Tidyverse:
+
+```r
+oswego %>%
+  count(ill)
+```
+
+Read the tidyverse code as:
+
+```text
+Start with oswego, and then count values of ill.
+```
+
+# Tidyverse Teaser: Filtering
+
+Base R:
+
+```r
+oswego[oswego$ill == TRUE, ]
+```
+
+Tidyverse:
+
+```r
+oswego %>%
+  filter(ill == TRUE)
+```
+
+Both keep rows where illness status is `TRUE`.
+
+<div class="callout">
+After lunch, we will focus on the tidyverse version.
+</div>
+
+# Tidyverse Teaser: Summarizing
+
+A readable tidyverse workflow:
+
+```r
+oswego %>%
+  filter(ill == TRUE) %>%
+  summarise(
+    mean_age = mean(age, na.rm = TRUE),
+    n_people = n()
+  )
+```
+
+Read as:
+
+```text
+Start with oswego,
+keep people who became ill,
+then summarize their average age and number.
+```
+
+# Morning Summary
+
+## Working in R
+
+- R vs RStudio
+- Scripts
+- R Projects
+- Working directories
+- File paths
+- `here()`
+
+## Core R
+
+- Objects
+- Data types
+- Vectors
+- Missing values
+
+# Morning Cheat Sheet
+
+Most useful functions from this morning:
+
+| Function | Purpose |
+|---|---|
+| `mean()` | Average |
+| `sum()` | Total |
+| `length()` | Number of values |
+| `head()` | First rows |
+| `summary()` | Quick summaries |
+| `str()` | Structure |
+| `names()` | Variable names |
+| `table()` | Counts |
+| `read_csv()` | Import CSV |
+| `here()` | Build project-based paths |
+
+# After Lunch
+
+We will use `dplyr` to learn:
+
+```r
+filter()
+select()
+mutate()
+arrange()
+count()
+group_by()
+summarise()
+```
+
+We will continue using the Oswego dataset so that the data are familiar while the code becomes more powerful.
+
+We will also use `here("Data", "...")` whenever we load files.
+
+# Final Checkpoint Before Lunch
+
+## You should now be able to:
+
+- Open the R Project
+- Load packages
+- Import the Oswego dataset
+- Inspect rows, columns, names, and structure
+- Run basic summaries
+- Recognize the tidyverse style we will use after lunch
+
+## Key ideas
+
+- Save your work in scripts.
+- Use the project and `here()` for file paths.
+- Inspect before analyzing.
+- Errors are normal and usually diagnosable.
+
+<div class="question">
+Final questions before lunch?
+</div>

@@ -1,0 +1,1981 @@
+---
+title: "Data Wrangling with dplyr"
+subtitle: "R Bootcamp — Day 1 Afternoon"
+author: "Joshua Lukemire"
+format:
+  revealjs:
+    theme: simple
+    slide-number: true
+    slide-level: 1
+    incremental: false
+    transition: fade
+    code-copy: true
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+<style>
+.reveal {
+  font-size: 26px;
+}
+
+.reveal .slides {
+  text-align: left;
+}
+
+.reveal h1 {
+  font-size: 1.5em;
+}
+
+.reveal h2 {
+  font-size: 1.15em;
+}
+
+.reveal h3 {
+  font-size: 1.0em;
+}
+
+.reveal p,
+.reveal li {
+  line-height: 1.22;
+}
+
+.reveal pre {
+  width: 100%;
+  margin-top: 0.3em;
+  margin-bottom: 0.3em;
+}
+
+.reveal pre code {
+  font-size: 1.28em;
+  line-height: 1.15;
+  max-height: 520px;
+}
+
+.reveal table {
+  font-size: 0.82em;
+  width: 100%;
+}
+
+.reveal td,
+.reveal th {
+  padding: 0.25em 0.45em;
+}
+
+.callout {
+  border-left: 5px solid #666;
+  padding-left: 0.7em;
+  margin-top: 0.7em;
+}
+
+.question {
+  border-left: 5px solid #999;
+  padding-left: 0.7em;
+  margin-top: 0.7em;
+  font-weight: 600;
+}
+
+.part {
+  font-size: 1.15em;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+</style>
+
+# Welcome Back
+
+## Data Wrangling with `dplyr`
+
+This afternoon is about manipulating data frames.
+
+By the end of the session, you should be able to:
+
+- Keep selected rows and columns
+- Sort rows
+- Create new variables
+- Count observations
+- Compute grouped summaries
+- Handle common missing-data situations
+- Combine related datasets with joins
+- Recognize wide and long data formats
+
+# Afternoon Roadmap
+
+| Part | Topic |
+|---|---|
+| Part I | Setup, the Pipe, and the `dplyr` Grammar |
+| Part II | Keeping Rows with `filter()` |
+| Part III | Keeping Columns with `select()` |
+| Part IV | Sorting Rows with `arrange()` |
+| Part V | Creating Variables with `mutate()` |
+| Part VI | Counting and Summarizing Data |
+| Part VII | Missing Data |
+| Part VIII | Combining Datasets with Joins |
+| Part IX | Reshaping Data |
+| Part X | Oswego Capstone Investigation |
+
+<div class="callout">
+This afternoon is the core data-wrangling session. These functions appear constantly in applied R workflows.
+</div>
+
+# Setup for the Afternoon
+
+We will continue using the Oswego outbreak dataset.
+
+The examples assume:
+
+- You are working inside an R Project
+- `here()` points to the project root
+- Your files are stored in a folder named `Data`
+
+```r
+library(tidyverse)
+library(here)
+
+oswego <- read_csv(
+  here("Data", "oswego.csv")
+)
+```
+
+# Quick Data Check
+
+Before manipulating a dataset, inspect it.
+
+```r
+head(oswego)
+
+str(oswego)
+
+names(oswego)
+
+summary(oswego)
+```
+
+Questions to ask:
+
+1. What does one row represent?
+2. What variables are available?
+3. How is illness coded?
+4. How are food exposures coded?
+5. Are there missing values?
+
+# Part I
+
+## Setup, the Pipe, and the `dplyr` Grammar
+
+<div class="part">Writing data analysis code as a sequence of readable steps</div>
+
+# Part I Learning Goals
+
+By the end of this section, you should be able to:
+
+- Explain why `dplyr` is useful
+- Read simple pipelines using `%>%`
+- Recognize the main `dplyr` verbs
+- Understand the difference between modifying a displayed result and saving an object
+
+# Why `dplyr`?
+
+Base R can manipulate data, but the syntax can become hard to read.
+
+Base R:
+
+```r
+oswego[oswego$ill == TRUE, ]
+```
+
+Tidyverse:
+
+```r
+oswego %>%
+  filter(ill == TRUE)
+```
+
+Both keep rows where `ill` is `"Yes"`.
+
+The tidyverse style often reads more like a sequence of analysis steps.
+
+# The Pipe `%>%`
+
+The pipe passes the object on the left into the function on the right.
+
+```r
+oswego %>%
+  count(ill)
+```
+
+Read this as:
+
+```text
+Start with oswego, and then count values of ill.
+```
+
+The pipe lets us build workflows step by step.
+
+# Reading a Pipeline
+
+A pipeline is read from top to bottom.
+
+```r
+oswego %>%
+  filter(ill == TRUE) %>%
+  summarise(
+    mean_age = mean(age, na.rm = TRUE)
+  )
+```
+
+Read as:
+
+1. Start with `oswego`
+2. Keep attendees who became ill
+3. Compute their mean age
+
+# Core Idea: Verbs for Data Frames
+
+`dplyr` functions are often called verbs because they describe actions.
+
+| Verb | Action |
+|---|---|
+| `filter()` | Keep rows |
+| `select()` | Keep columns |
+| `arrange()` | Sort rows |
+| `mutate()` | Create or modify columns |
+| `count()` | Count rows |
+| `summarise()` | Reduce data to summaries |
+| Join functions | Combine tables |
+
+# Displaying vs Saving Results
+
+Most `dplyr` code returns a result but does not permanently change the original object.
+
+This displays a modified version:
+
+```r
+oswego %>%
+  filter(ill == TRUE)
+```
+
+This saves the modified version:
+
+```r
+cases_only <- oswego %>%
+  filter(ill == TRUE)
+```
+
+<div class="callout">
+If you want to use the result later, assign it to an object.
+</div>
+
+# Exercise: Predict the Output
+
+Before running the code, describe what it will return.
+
+```r
+oswego %>%
+  head()
+```
+
+Questions:
+
+- Will this change the dataset?
+- How many rows do you expect to see?
+- Why is `head()` useful at the start of an analysis?
+
+# Checkpoint: Pipe and `dplyr`
+
+## You should now be able to:
+
+- Read simple pipelines from top to bottom
+- Explain what `%>%` does
+- Recognize common `dplyr` verbs
+- Understand when results are displayed versus saved
+
+## Key ideas
+
+- Pipelines express a sequence of steps.
+- The object on the left is passed to the function on the right.
+- Assign results if you need them later.
+
+<div class="question">
+Questions before we start manipulating rows?
+</div>
+
+# Part II
+
+## Keeping Rows with `filter()`
+
+<div class="part">Selecting observations that meet conditions</div>
+
+# Part II Learning Goals
+
+By the end of this section, you should be able to:
+
+- Keep rows using `filter()`
+- Use equality and comparison operators
+- Combine multiple conditions
+- Use `%in%` to match several values
+- Filter missing and non-missing values
+- Recognize common filtering mistakes
+
+# `filter()`: Keep Rows
+
+Use `filter()` when you want a subset of observations.
+
+General pattern:
+
+```r
+data %>%
+  filter(condition)
+```
+
+Example:
+
+```r
+oswego %>%
+  filter(age > 50)
+```
+
+This keeps rows where `age` is greater than 50.
+
+# `filter()`: Character Conditions
+
+For text values, use quotes.
+
+```r
+oswego %>%
+  filter(sex == "M")
+```
+
+Common mistake:
+
+```r
+oswego %>%
+  filter(sex   == M)
+```
+
+Without quotes, R looks for an object named `M`.
+
+# `filter()`: Equality Uses `==`
+
+In R, `==` tests equality.
+
+```r
+oswego %>%
+  filter(ill == TRUE)
+```
+
+A single `=` is usually used for assigning argument values inside functions.
+
+Common mistake:
+
+```r
+oswego %>%
+  filter(ill = TRUE)
+```
+
+This is not the same as testing whether `ill` equals `TRUE`.
+
+# `filter()`: Comparison Operators
+
+Common comparisons:
+
+| Operator | Meaning |
+|---|---|
+| `==` | equal to |
+| `!=` | not equal to |
+| `>` | greater than |
+| `<` | less than |
+| `>=` | greater than or equal to |
+| `<=` | less than or equal to |
+
+Example:
+
+```r
+oswego %>%
+  filter(age >= 65)
+```
+
+# `filter()`: Multiple Conditions
+
+Commas inside `filter()` mean that all conditions must be true.
+
+```r
+oswego %>%
+  filter(
+    ill == TRUE,
+    age > 50
+  )
+```
+
+This keeps attendees who:
+
+- became ill
+- are older than 50
+
+# `filter()`: AND with `&`
+
+You can also use `&` for AND.
+
+```r
+oswego %>%
+  filter(
+    ill == TRUE & age > 50
+  )
+```
+
+This is equivalent to using a comma in this example.
+
+Use `&` when you want to explicitly combine logical statements.
+
+# `filter()`: OR with `|`
+
+Use `|` when either condition can be true.
+
+```r
+oswego %>%
+  filter(
+    age < 18 | age >= 65
+  )
+```
+
+This keeps attendees who are either:
+
+- younger than 18
+- at least 65
+
+# `filter()`: NOT with `!`
+
+Use `!` to negate a condition.
+
+```r
+oswego %>%
+  filter(
+    !(sex == "M")
+  )
+```
+
+A more direct version is often:
+
+```r
+oswego %>%
+  filter(sex != "M")
+```
+
+Both keep rows where sex is not `"M"`.
+
+# `filter()`: Matching Several Values with `%in%`
+
+Use `%in%` when you want values from a list.
+
+```r
+oswego %>%
+  filter(
+    sex %in% c("M", "F")
+  )
+```
+
+This keeps rows where `sex` is either `"M"` or `"F"`.
+
+<div class="callout">
+This is often cleaner than writing many OR conditions.
+</div>
+
+# `filter()`: Missing Values
+
+Use `is.na()` to identify missing values.
+
+```r
+oswego %>%
+  filter(is.na(age))
+```
+
+Use `!is.na()` to keep non-missing values.
+
+```r
+oswego %>%
+  filter(!is.na(age))
+```
+
+Read `!is.na(age)` as:
+
+```text
+age is not missing
+```
+
+# Exercise: Predict the Output
+
+What rows will this keep?
+
+```r
+oswego %>%
+  filter(
+    ill == TRUE,
+    age > 50
+  )
+```
+
+Answer in words before running the code.
+
+# Exercise: Modify the Code
+
+Goal:
+
+> Keep attendees younger than 18.
+
+Start with:
+
+```r
+oswego %>%
+  filter(age > 18)
+```
+
+Modify the code to match the goal.
+
+# Exercise: Write the Code
+
+Write code to keep attendees who:
+
+- became ill
+- are at least 65 years old
+
+Start with:
+
+```r
+oswego %>%
+  filter(
+    # your conditions here
+  )
+```
+
+# Exercise: Find the Error
+
+What is wrong with this code?
+
+```r
+oswego %>%
+  filter(ill = TRUE)
+```
+
+How would you fix it?
+
+# Checkpoint: `filter()`
+
+## You should now be able to:
+
+- Keep rows using `filter()`
+- Filter numeric and character variables
+- Use `==`, `!=`, `>`, `<`, `>=`, and `<=`
+- Combine conditions with commas, `&`, and `|`
+- Use `%in%` for several possible values
+- Filter missing and non-missing values
+
+## Key ideas
+
+- `filter()` keeps rows.
+- Character values need quotes.
+- Equality uses `==`, not `=`.
+- Filtering does not change the original dataset unless you save the result.
+
+<div class="question">
+Questions before we move to columns?
+</div>
+
+# Part III
+
+## Keeping Columns with `select()`
+
+<div class="part">Choosing variables for analysis</div>
+
+# Part III Learning Goals
+
+By the end of this section, you should be able to:
+
+- Keep selected columns
+- Drop columns
+- Reorder columns
+- Use helper functions like `starts_with()` and `contains()`
+- Understand why smaller working datasets can be helpful
+
+# `select()`: Keep Columns
+
+Use `select()` when you want to keep, drop, or reorder variables.
+
+General pattern:
+
+```r
+data %>%
+  dplyr::select(variable1, variable2)
+```
+
+Example:
+
+```r
+oswego %>%
+  dplyr::select(age, sex, ill)
+```
+
+This returns only the selected columns.
+
+# `select()`: Why It Is Useful
+
+Real datasets can contain many variables.
+
+`select()` helps you create a smaller working dataset.
+
+Example:
+
+```r
+oswego_small <- oswego %>%
+  dplyr::select(age, sex, ill)
+```
+
+This can make analysis code easier to read and reduce mistakes.
+
+# `select()`: Dropping Columns
+
+Use `-` to drop variables.
+
+```r
+oswego %>%
+  dplyr::select(-age)
+```
+
+This keeps every column except `age`.
+
+<div class="callout">
+Dropping a variable from the displayed result does not delete it from the original dataset unless you overwrite the object.
+</div>
+
+# `select()`: Reordering Columns
+
+`select()` can also reorder variables.
+
+```r
+oswego %>%
+  dplyr::select(ill, age, sex, everything())
+```
+
+This puts `ill`, `age`, and `sex` first, followed by all remaining variables.
+
+# `select()`: Helper Functions
+
+Helper functions are useful when selecting many variables.
+
+```r
+oswego %>%
+  dplyr::select(starts_with("c"))
+```
+
+```r
+oswego %>%
+  dplyr::select(contains("ill"))
+```
+
+```r
+oswego %>%
+  dplyr::select(ends_with("e"))
+```
+
+These depend on the variable names in your dataset.
+
+# Exercise: Predict the Output
+
+What columns remain?
+
+```r
+oswego %>%
+  dplyr::select(age, ill)
+```
+
+What happens to all other columns?
+
+# Exercise: Modify the Code
+
+Goal:
+
+> Keep only `age`, `sex`, and `ill`.
+
+Start with:
+
+```r
+oswego %>%
+  dplyr::select(age, ill)
+```
+
+Modify the code to include `sex`.
+
+# Exercise: Find the Error
+
+What is wrong?
+
+```r
+oswego %>%
+  dplyr::select(age sex ill)
+```
+
+How should variables be separated inside `select()`?
+
+# Checkpoint: `select()`
+
+## You should now be able to:
+
+- Keep selected columns
+- Drop columns using `-`
+- Reorder columns
+- Use `everything()`
+- Recognize common selection helpers
+
+## Key ideas
+
+- `select()` keeps columns.
+- `filter()` keeps rows.
+- Variable names inside `select()` are usually not quoted.
+- Use commas to separate variable names.
+
+<div class="question">
+Questions before we sort rows?
+</div>
+
+# Part IV
+
+## Sorting Rows with `arrange()`
+
+<div class="part">Changing row order without changing row content</div>
+
+# Part IV Learning Goals
+
+By the end of this section, you should be able to:
+
+- Sort rows in ascending order
+- Sort rows in descending order
+- Sort by multiple variables
+- Understand that sorting does not change the number of rows or columns
+
+# `arrange()`: Sort Rows
+
+Use `arrange()` to sort rows.
+
+```r
+oswego %>%
+  arrange(age)
+```
+
+This sorts from smallest age to largest age.
+
+The number of rows and columns does not change; only the row order changes.
+
+# `arrange()`: Descending Order
+
+Use `desc()` for descending order.
+
+```r
+oswego %>%
+  arrange(desc(age))
+```
+
+This sorts from oldest to youngest.
+
+# `arrange()`: Multiple Variables
+
+You can sort by more than one variable.
+
+```r
+oswego %>%
+  arrange(ill, desc(age))
+```
+
+This sorts by illness status first, then by age within illness status.
+
+# Exercise: Write the Code
+
+Goal:
+
+> Show the oldest attendees first.
+
+Use:
+
+```r
+arrange()
+desc()
+```
+
+Start with:
+
+```r
+oswego %>%
+  # your code here
+```
+
+# Exercise: Write the Code
+
+Goal:
+
+> Show the youngest to oldest attendees, arranged by whether or not they fell ill.
+
+Start with:
+
+```r
+oswego %>%
+  # your code here
+```
+
+# Checkpoint: `arrange()`
+
+## You should now be able to:
+
+- Sort rows using `arrange()`
+- Use `desc()` for descending order
+- Sort by more than one variable
+
+## Key ideas
+
+- `arrange()` changes row order only.
+- It does not drop rows.
+- It does not create new variables.
+
+<div class="question">
+Questions before we create variables?
+</div>
+
+# Part V
+
+## Creating Variables with `mutate()`
+
+<div class="part">Adding information to a dataset</div>
+
+# Part V Learning Goals
+
+By the end of this section, you should be able to:
+
+- Create new variables with `mutate()`
+- Create logical indicators
+- Use arithmetic to create derived variables
+- Use `ifelse()` for two categories
+- Use `case_when()` for multiple categories
+- Understand why the order of `case_when()` conditions matters
+
+# `mutate()`: Create or Modify Columns
+
+Use `mutate()` to create new variables.
+
+General pattern:
+
+```r
+data %>%
+  mutate(
+    new_variable = expression
+  )
+```
+
+Example:
+
+```r
+oswego %>%
+  mutate(
+    adult = age >= 18
+  )
+```
+
+This creates a logical variable named `adult`.
+
+# `mutate()`: Displaying vs Saving
+
+`mutate()` returns a new data frame.
+
+It does not permanently change `oswego` unless you save the result.
+
+Temporary result:
+
+```r
+oswego %>%
+  mutate(adult = age >= 18)
+```
+
+Saved result:
+
+```r
+oswego <- oswego %>%
+  mutate(adult = age >= 18)
+```
+
+# `mutate()`: Creating Logical Indicators
+
+Logical indicators are useful for analysis.
+
+```r
+oswego <- oswego %>%
+  mutate(
+    case = ill == TRUE,
+    adult = age >= 18,
+    senior = age >= 65
+  )
+```
+
+These variables contain `TRUE` or `FALSE`.
+
+# `mutate()`: Arithmetic
+
+You can create variables using arithmetic (note the code below is just an example).
+
+```r
+summary_table <- summary_table %>%
+  mutate(
+    attack_rate = cases / total
+  )
+```
+
+For percentages:
+
+```r
+summary_table <- summary_table %>%
+  mutate(
+    attack_rate_percent = 100 * cases / total
+  )
+```
+
+# `mutate()`: `ifelse()`
+
+Use `ifelse()` for two categories.
+
+```r
+oswego %>%
+  mutate(
+    age_group = ifelse(
+      age < 18,
+      "Child",
+      "Adult"
+    )
+  )
+```
+
+Read as:
+
+> If age is less than 18, label Child; otherwise label Adult.
+
+# `mutate()`: `case_when()`
+
+Use `case_when()` for more than two categories.
+
+```r
+oswego %>%
+  mutate(
+    age_group = case_when(
+      age < 18 ~ "Child",
+      age >= 18 & age < 65 ~ "Adult",
+      age >= 65 ~ "Senior",
+      TRUE ~ "Missing or unknown"
+    )
+  )
+```
+
+`case_when()` checks conditions from top to bottom.
+
+# `case_when()`: Order Matters
+
+The first true condition is used.
+
+```r
+case_when(
+  age >= 18 ~ "Adult",
+  age >= 65 ~ "Senior"
+)
+```
+
+This will never label anyone as `"Senior"` because everyone age 65+ also satisfies `age >= 18`.
+
+Put more specific conditions first.
+
+# Exercise: Predict the Output
+
+What values will `adult` contain?
+
+```r
+oswego %>%
+  mutate(
+    adult = age >= 18
+  )
+```
+
+What type of variable is `adult`?
+
+# Exercise: Modify the Code
+
+Goal:
+
+> Create a variable named `senior` for attendees age 65 or older.
+
+Start with:
+
+```r
+oswego %>%
+  mutate(
+    adult = age >= 18
+  )
+```
+
+Modify the code.
+
+# Exercise: Write the Code
+
+Create an `age_group` variable with three categories:
+
+- `"Child"` for age under 18
+- `"Adult"` for age 18 to 64
+- `"Senior"` for age 65 or older
+
+Use `case_when()`.
+
+# Exercise: Find the Error
+
+What is wrong?
+
+```r
+oswego %>%
+  mutate(
+    age_group == "Adult"
+  )
+```
+
+Hint:
+
+Inside `mutate()`, are we testing equality or creating a new variable?
+
+# Checkpoint: `mutate()`
+
+## You should now be able to:
+
+- Create new variables
+- Save modified datasets
+- Create logical indicators
+- Use arithmetic inside `mutate()`
+- Use `ifelse()` and `case_when()`
+
+## Key ideas
+
+- `mutate()` creates or modifies columns.
+- Use `=` to create a variable inside `mutate()`.
+- Use `==` to test equality.
+- `case_when()` conditions are evaluated from top to bottom.
+
+<div class="question">
+Questions before we start counting and summarizing?
+</div>
+
+# Part VI
+
+## Counting and Summarizing Data
+
+<div class="part">Turning rows into useful summaries</div>
+
+# Part VI Learning Goals
+
+By the end of this section, you should be able to:
+
+- Count rows using `count()`
+- Count combinations of variables
+- Add proportions to count tables
+- Use `group_by()` and `summarise()`
+- Compute grouped counts, means, medians, and proportions
+
+# `count()`: Count Rows
+
+Use `count()` to count observations.
+
+```r
+oswego %>%
+  count(ill)
+```
+
+This counts rows for each value of `ill`.
+
+`count()` is often the quickest way to inspect categorical variables.
+
+# `count()`: Two Variables
+
+You can count combinations of variables.
+
+```r
+oswego %>%
+  count(ill, sex)
+```
+
+This gives one row for each observed combination of illness status and sex.
+
+# `count()`: Sorting Counts
+
+Use `sort = TRUE` to show the largest counts first.
+
+```r
+oswego %>%
+  count(ill, sort = TRUE)
+```
+
+This is useful for quickly identifying common categories.
+
+# `count()`: Adding Proportions
+
+`count()` gives counts, but we often want proportions.
+
+```r
+oswego %>%
+  count(ill) %>%
+  mutate(
+    prop = n / sum(n)
+  )
+```
+
+This computes the proportion of attendees in each illness category.
+
+# Exercise: Predict the Output
+
+How many rows will this return?
+
+```r
+oswego %>%
+  count(ill, sex)
+```
+
+What does each row represent?
+
+# Exercise: Write the Code
+
+Count attendees by:
+
+- illness status
+- age group
+
+Assume `age_group` has already been created.
+
+# `group_by()` + `summarise()`
+
+Use `group_by()` and `summarise()` to calculate summaries within groups.
+
+```r
+oswego %>%
+  group_by(ill) %>%
+  summarise(
+    mean_age = mean(age, na.rm = TRUE)
+  )
+```
+
+Read as:
+
+> Group the data by illness status, then compute mean age in each group.
+
+# `summarise()`: What It Returns
+
+`summarise()` usually reduces the data.
+
+Without grouping:
+
+```r
+oswego %>%
+  summarise(
+    mean_age = mean(age, na.rm = TRUE)
+  )
+```
+
+This returns one row.
+
+With grouping:
+
+```r
+oswego %>%
+  group_by(ill) %>%
+  summarise(
+    mean_age = mean(age, na.rm = TRUE)
+  )
+```
+
+This returns one row per illness group.
+
+# Common Summary Functions
+
+| Function | Use |
+|---|---|
+| `n()` | Number of rows |
+| `mean()` | Average |
+| `median()` | Median |
+| `min()` | Minimum |
+| `max()` | Maximum |
+| `sd()` | Standard deviation |
+| `sum()` | Total |
+
+# Multiple Summaries
+
+You can compute several summaries at once.
+
+```r
+oswego %>%
+  group_by(ill) %>%
+  summarise(
+    n = n(),
+    mean_age = mean(age, na.rm = TRUE),
+    median_age = median(age, na.rm = TRUE)
+  )
+```
+
+# Multiple Grouping Variables
+
+You can group by more than one variable.
+
+```r
+oswego %>%
+  group_by(sex, ill) %>%
+  summarise(
+    n = n()
+  )
+```
+
+This returns one row per combination of `sex` and `ill`.
+
+# Grouped Proportions
+
+A common pattern is:
+
+```r
+oswego %>%
+  group_by(sex) %>%
+  summarise(
+    attack_rate = mean(ill == TRUE)
+  )
+```
+
+This works because `ill == TRUE` creates TRUE/FALSE values, and the mean of TRUE/FALSE gives the proportion TRUE.
+
+# Important: `.groups`
+
+Sometimes `summarise()` prints a message about grouped output.
+
+You may see code like:
+
+```r
+oswego %>%
+  group_by(sex, ill) %>%
+  summarise(
+    n = n(),
+    .groups = "drop"
+  )
+```
+
+For beginners, `.groups = "drop"` means:
+
+> After summarizing, remove the grouping structure.
+
+# Exercise: Predict the Output
+
+How many rows will the result have?
+
+```r
+oswego %>%
+  group_by(sex) %>%
+  summarise(
+    n = n()
+  )
+```
+
+What does each row represent?
+
+# Exercise: Modify the Code
+
+Goal:
+
+> Calculate mean age by illness status.
+
+Start with:
+
+```r
+oswego %>%
+  group_by(sex) %>%
+  summarise(
+    mean_age = mean(age, na.rm = TRUE)
+  )
+```
+
+Modify the grouping variable.
+
+# Exercise: Write the Code
+
+Create a summary table with one row per illness status containing:
+
+- number of attendees
+- mean age
+- median age
+
+Use:
+
+```r
+group_by()
+summarise()
+```
+
+# Exercise: Find the Error
+
+What is wrong?
+
+```r
+oswego %>%
+  group_by(ill) %>%
+  summarise(
+    mean_age = mean(age)
+```
+
+How would you fix it?
+
+# Checkpoint: Counting and Summarizing
+
+## You should now be able to:
+
+- Count categories with `count()`
+- Add proportions to count tables
+- Group data before summarizing
+- Compute summaries within groups
+- Use `n()` inside `summarise()`
+- Interpret one-row-per-group output
+
+## Key ideas
+
+- `count()` is a fast way to tabulate categories.
+- `group_by()` changes the context for summaries.
+- `summarise()` reduces data to summary rows.
+- The mean of TRUE/FALSE values can be used as a proportion.
+
+<div class="question">
+Questions before we discuss missing data?
+</div>
+
+# Part VII
+
+## Missing Data
+
+<div class="part">Recognizing and handling incomplete information</div>
+
+# Part VII Learning Goals
+
+By the end of this section, you should be able to:
+
+- Identify missing values with `is.na()`
+- Filter missing and non-missing rows
+- Count missing values
+- Remove rows with missing values using `drop_na()`
+- Replace missing values using `replace_na()`
+- Understand why missing-data decisions require judgment
+
+# Missing Data: Why It Matters
+
+Missing data are common in public health datasets.
+
+Examples:
+
+- Unknown age
+- Missing symptom onset date
+- Incomplete exposure history
+- Missing lab result
+- Unknown vaccination status
+
+R represents missing values as `NA`.
+
+# Identifying Missing Values
+
+Use `is.na()`.
+
+```r
+oswego %>%
+  filter(is.na(onsettime))
+```
+
+This keeps rows where onset time is missing.
+
+Use `!is.na()` for non-missing values.
+
+```r
+oswego %>%
+  filter(!is.na(onsettime))
+```
+
+# Counting Missing Values
+
+A useful pattern:
+
+```r
+oswego %>%
+  summarise(
+    missing_onsettime = sum(is.na(onsettime))
+  )
+```
+
+This works because `is.na(onsettime)` returns TRUE/FALSE values, and `sum()` counts the TRUE values.
+
+# `drop_na()`
+
+Use `drop_na()` to remove rows with missing values.
+
+```r
+oswego %>%
+  drop_na(onsettime)
+```
+
+This drops rows where `onsettime` is missing.
+
+You can include more than one variable:
+
+```r
+oswego %>%
+  drop_na(onsettime, ill)
+```
+
+# `replace_na()`
+
+Use `replace_na()` when you want to replace missing values.
+
+```r
+oswego %>%
+  mutate(
+    onsetdate = replace_na(onsetdate, "Unknown")
+  )
+```
+
+Use this carefully. Replacing missing values changes interpretation.
+
+# Exercise: Write the Code
+
+Write code to count how many attendees have missing age.
+
+Start with:
+
+```r
+oswego %>%
+  summarise(
+    # your summary here
+  )
+```
+
+# Checkpoint: Missing Data
+
+## You should now be able to:
+
+- Identify missing values
+- Keep rows with missing values
+- Keep rows without missing values
+- Count missing values
+- Drop or replace missing values when appropriate
+
+## Key ideas
+
+- Missing values are information.
+- Removing missing values changes the dataset.
+- Replacing missing values changes interpretation.
+- Always be clear about what you did.
+
+<div class="question">
+Questions before we combine datasets?
+</div>
+
+# Part VIII
+
+## Combining Datasets with Joins
+
+<div class="part">Connecting related tables using shared keys</div>
+
+# Part VIII Learning Goals
+
+By the end of this section, you should be able to:
+
+- Explain why joins are needed
+- Identify a join key
+- Use `left_join()`
+- Use `inner_join()`
+- Use `full_join()`
+- Join more than two tables
+- Recognize common join mistakes
+- Check for duplicate keys
+
+# Joins: Why We Need Them
+
+Real public health data often come in multiple tables.
+
+Examples:
+
+- Case line list
+- Laboratory results
+- Vaccination registry
+- Hospitalization records
+- Population denominators
+
+Joins combine related information using a shared key.
+
+# Join Practice Setup
+
+We will use three small synthetic datasets:
+
+```r
+cases <- read_csv(
+  here("Data", "cases.csv")
+)
+
+labs <- read_csv(
+  here("Data", "labs.csv")
+)
+
+vaccination <- read_csv(
+  here("Data", "vaccination.csv")
+)
+```
+
+Each table contains an `id` variable.
+
+The `id` variable is the key used to match rows.
+
+# Join Practice Tables
+
+## `cases`
+
+| id | age | sex | county |
+|---|---:|---|---|
+| 1 | 22 | F | Fulton |
+| 2 | 35 | M | DeKalb |
+| 3 | 41 | F | Fulton |
+| 4 | 19 | M | Cobb |
+| 5 | 60 | F | DeKalb |
+
+## `labs`
+
+| id | pcr_result |
+|---|---|
+| 1 | Positive |
+| 2 | Negative |
+| 4 | Positive |
+| 6 | Positive |
+
+# Join Mental Model
+
+Before joining, ask:
+
+1. What is the left table?
+2. What is the right table?
+3. What variable is the key?
+4. Which rows should be kept?
+5. What should happen to unmatched rows?
+
+These questions matter more than memorizing join names.
+
+# `left_join()`
+
+`left_join()` keeps all rows from the left table and attaches matching information from the right table.
+
+```r
+cases %>%
+  left_join(labs, by = "id")
+```
+
+Interpretation:
+
+> Keep all cases and attach lab results when available.
+
+If a case has no lab result, the lab columns become `NA`.
+
+# Exercise: Predict the Output
+
+Using `left_join()`:
+
+```r
+cases %>%
+  left_join(labs, by = "id")
+```
+
+Questions:
+
+1. Which IDs appear in the result?
+2. What happens to ID 3?
+3. What happens to ID 5?
+4. Does ID 6 appear?
+
+# `inner_join()`
+
+`inner_join()` keeps only rows with matching keys in both tables.
+
+```r
+cases %>%
+  inner_join(labs, by = "id")
+```
+
+Interpretation:
+
+> Keep only people who appear in both the cases table and the labs table.
+
+# Exercise: Predict the Output
+
+Using `inner_join()`:
+
+```r
+cases %>%
+  inner_join(labs, by = "id")
+```
+
+Questions:
+
+1. Which IDs remain?
+2. Which case IDs are dropped?
+3. Why is ID 6 dropped?
+
+# `full_join()`
+
+`full_join()` keeps all rows from both tables.
+
+```r
+cases %>%
+  full_join(labs, by = "id")
+```
+
+Interpretation:
+
+> Keep everyone who appears in either table.
+
+Rows with unmatched information receive `NA` values.
+
+# Join Comparison
+
+| Join | Rows Kept |
+|---|---|
+| `left_join()` | All rows from the left table |
+| `inner_join()` | Only rows with matches in both tables |
+| `full_join()` | All rows from both tables |
+
+Most analysis workflows use `left_join()` most often.
+
+# Joining More Than Two Tables
+
+You can chain joins.
+
+```r
+cases %>%
+  left_join(labs, by = "id") %>%
+  left_join(vaccination, by = "id")
+```
+
+Interpretation:
+
+> Start with the case line list, then attach lab results and vaccination information when available.
+
+# Exercise: Modify the Code
+
+Goal:
+
+> Keep all cases and attach vaccination information.
+
+Start with:
+
+```r
+cases %>%
+  inner_join(vaccination, by = "id")
+```
+
+Modify the join so that all cases are kept.
+
+# Exercise: Write the Code
+
+Write code to:
+
+1. Start with `cases`
+2. Attach lab results
+3. Attach vaccination information
+
+Use `left_join()`.
+
+# Exercise: Find the Error
+
+What is the problem?
+
+```r
+cases %>%
+  left_join(labs)
+```
+
+Why is it usually safer to specify:
+
+```r
+by = "id"
+```
+
+explicitly?
+
+# One-to-Many Joins
+
+Sometimes one row in the left table matches multiple rows in the right table.
+
+Example:
+
+- One case
+- Multiple lab tests
+
+This creates multiple rows after the join.
+
+<div class="callout">
+If a join unexpectedly increases the number of rows, check whether the key is unique in both tables.
+</div>
+
+# Checking Join Keys
+
+Useful checks:
+
+```r
+cases %>%
+  count(id) %>%
+  filter(n > 1)
+
+labs %>%
+  count(id) %>%
+  filter(n > 1)
+```
+
+These help identify duplicate keys before joining.
+
+# Checkpoint: Joins
+
+## You should now be able to:
+
+- Identify a join key
+- Use `left_join()`, `inner_join()`, and `full_join()`
+- Explain which rows each join keeps
+- Attach information from multiple tables
+- Recognize why duplicate keys can change row counts
+
+## Key ideas
+
+- Always identify the key before joining.
+- `left_join()` is often the safest default for adding information to a line list.
+- Check row counts before and after joins.
+- Unexpected row multiplication usually means duplicate keys.
+
+<div class="question">
+Questions before we discuss reshaping?
+</div>
+
+# Part IX
+
+## Reshaping Data
+
+<div class="part">Recognizing wide and long formats</div>
+
+# Part IX Learning Goals
+
+By the end of this section, you should be able to:
+
+- Distinguish wide from long data
+- Explain why reshaping is useful
+- Recognize `pivot_longer()`
+- Recognize `pivot_wider()`
+- Understand symptom data as a common wide-to-long example
+
+# Pivoting: Why Reshape Data?
+
+Data can be stored in different shapes.
+
+## Wide format
+
+One row per person, multiple symptom columns.
+
+## Long format
+
+One row per person-symptom combination.
+
+Some analyses are easier in wide format. Others are easier in long format.
+
+# Wide Symptom Data
+
+Example:
+
+| id | fever | cough | nausea |
+|---|---|---|---|
+| 1 | Yes | No | Yes |
+| 2 | No | Yes | No |
+
+This is wide because each symptom is a separate column.
+
+# `pivot_longer()`
+
+Use `pivot_longer()` to make wide data longer.
+
+```r
+symptoms %>%
+  pivot_longer(
+    cols = c(fever, cough, nausea),
+    names_to = "symptom",
+    values_to = "present"
+  )
+```
+
+Result:
+
+| id | symptom | present |
+|---|---|---|
+| 1 | fever | Yes |
+| 1 | cough | No |
+| 1 | nausea | Yes |
+
+# `pivot_wider()`
+
+Use `pivot_wider()` to make long data wider.
+
+```r
+long_symptoms %>%
+  pivot_wider(
+    names_from = symptom,
+    values_from = present
+  )
+```
+
+This reverses the previous operation.
+
+# Exercise: Predict the Output
+
+What will this do?
+
+```r
+symptoms %>%
+  pivot_longer(
+    cols = c(fever, cough, nausea),
+    names_to = "symptom",
+    values_to = "present"
+  )
+```
+
+Questions:
+
+1. What happens to the symptom columns?
+2. What does each row represent after pivoting?
+
+# Checkpoint: Reshaping Data
+
+## You should now be able to:
+
+- Recognize wide data
+- Recognize long data
+- Explain what `pivot_longer()` does
+- Explain what `pivot_wider()` does
+
+## Key ideas
+
+- Wide data spread repeated information across columns.
+- Long data store repeated information across rows.
+- Many visualization and summary workflows work better with long data.
+
+<div class="question">
+Questions before the capstone exercise?
+</div>
+
+# Part X
+
+## Oswego Capstone Investigation
+
+<div class="part">Putting the afternoon tools together</div>
+
+# Capstone Investigation
+
+Using the Oswego dataset, create a short investigation summary.
+
+Answer:
+
+1. How many attendees are in the dataset?
+2. How many became ill?
+3. What proportion became ill?
+4. What is the mean age of cases?
+5. What is the mean age of non-cases?
+6. How many attendees are children, adults, and seniors?
+7. What is the attack rate by age group?
+
+# Capstone: Suggested Workflow
+
+1. Inspect the data
+2. Create an age group variable
+3. Count illness status
+4. Summarize age by illness status
+5. Summarize illness by age group
+6. Check whether your results make sense
+
+Useful functions:
+
+```r
+mutate()
+case_when()
+count()
+group_by()
+summarise()
+```
+
+Interpretation:
+
+> Within each age group, what proportion became ill?
+
+# Capstone Checkpoint
+
+## You should now be able to:
+
+- Build a multi-step `dplyr` workflow
+- Create derived variables
+- Summarize by groups
+- Compute simple proportions
+- Interpret grouped output
+
+## Key ideas
+
+- Most applied analyses are sequences of small steps.
+- Write one step, run it, inspect it, then add the next step.
+- Clear code is easier to debug and easier to share.
+
+<div class="question">
+Questions about the capstone workflow?
+</div>
+
+
+# Afternoon Takeaways
+
+You have now seen how to:
+
+- Build pipelines with `%>%`
+- Keep rows with `filter()`
+- Keep columns with `select()`
+- Sort rows with `arrange()`
+- Create variables with `mutate()`
+- Count observations with `count()`
+- Summarize groups with `group_by()` and `summarise()`
+- Handle missing values
+- Combine tables with joins
+- Reshape data with pivots
+
+# Afternoon Cheat Sheet
+
+| Task | Function |
+|---|---|
+| Keep rows | `filter()` |
+| Keep columns | `select()` |
+| Sort rows | `arrange()` |
+| Create variables | `mutate()` |
+| Count rows | `count()` |
+| Group data | `group_by()` |
+| Summarize | `summarise()` |
+| Combine tables | `left_join()`, `inner_join()`, `full_join()` |
+| Reshape | `pivot_longer()`, `pivot_wider()` |
+
+# Final Checkpoint
+
+## You should now be able to:
+
+- Load data from the project `Data` folder
+- Build readable pipelines
+- Apply the main `dplyr` verbs
+- Combine small related datasets
+- Complete a basic analysis summary
+
+## Key ideas
+
+- Start simple.
+- Inspect results frequently.
+- Save intermediate results when helpful.
+- Write code that another person could understand.
+
+<div class="question">
+Final questions before we wrap up Day 1?
+</div>
