@@ -1,0 +1,3001 @@
+---
+title: "Data Visualization and Tables in R"
+subtitle: "R Bootcamp — Day 2"
+author: "Joshua Lukemire"
+format:
+  revealjs:
+    theme: simple
+    slide-number: true
+    slide-level: 1
+    incremental: false
+    transition: fade
+    code-copy: true
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+<style>
+.reveal {
+  font-size: 26px;
+}
+
+.reveal .slides {
+  text-align: left;
+}
+
+.reveal h1 {
+  font-size: 1.5em;
+}
+
+.reveal h2 {
+  font-size: 1.15em;
+}
+
+.reveal h3 {
+  font-size: 1.0em;
+}
+
+.reveal p,
+.reveal li {
+  line-height: 1.22;
+}
+
+.reveal pre {
+  width: 100%;
+  margin-top: 0.3em;
+  margin-bottom: 0.3em;
+}
+
+.reveal pre code {
+  font-size: 1.28em;
+  line-height: 1.15;
+  max-height: 520px;
+}
+
+.reveal table {
+  font-size: 0.82em;
+  width: 100%;
+}
+
+.reveal td,
+.reveal th {
+  padding: 0.25em 0.45em;
+}
+
+.callout {
+  border-left: 5px solid #666;
+  padding-left: 0.7em;
+  margin-top: 0.7em;
+}
+
+.question {
+  border-left: 5px solid #999;
+  padding-left: 0.7em;
+  margin-top: 0.7em;
+  font-weight: 600;
+}
+
+.part {
+  font-size: 1.15em;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+</style>
+
+# Welcome Back
+
+## Data Visualization and Tables in R
+
+Today focuses on turning cleaned and summarized data into figures and tables.
+
+By the end of the full session, you should be able to:
+
+- Build common statistical graphics using `ggplot2`
+- Modify existing plot code
+- Choose appropriate geoms for common data questions
+- Customize labels, themes, facets, and grouped displays
+- Create polished tables using `gt`
+- Create descriptive summary tables using `gtsummary`
+
+# Today's Roadmap
+
+| Part | Topic |
+|---|---|
+| Part I | Grammar of Graphics and Your First `ggplot` |
+| Part II | Histograms and Bar Charts |
+| Part III | Scatterplots, Boxplots, and Density Plots |
+| Part IV | Aesthetics |
+| Part V | Grouped Plots and Position Adjustments |
+| Part VI | Faceting |
+| Part VII | Practical Plot Improvements |
+| Part VIII | Food Exposure Visualizations |
+| Part IX | Common `ggplot` Errors |
+| Part X | Tables with `gt` |
+| Part XI | Tables with `gtsummary` |
+| Part XII | Capstone |
+
+<div class="callout">
+We will spend most of the day on `ggplot2`, then close with practical table-making tools.
+</div>
+
+# Setup
+
+We will continue using the Oswego dataset.
+
+The examples assume:
+
+- You are working inside an R Project
+- Your data are stored in a folder named `Data`
+- `here()` points to the folder directly above `Data`
+
+```{r}
+#| echo: true
+library(tidyverse)
+library(here)
+library(gt)
+library(gtsummary)
+
+oswego <- read_csv(
+  here("Data", "oswego.csv")
+)
+```
+
+# Part I
+
+## Grammar of Graphics and Your First `ggplot`
+
+<div class="part">Understanding how `ggplot2` builds figures</div>
+
+# Part I Learning Goals
+
+By the end of this section, you should be able to:
+
+- Recognize the basic structure of `ggplot` code
+- Identify the data source in a plot
+- Identify aesthetics inside `aes()`
+- Identify the geom being used
+- Understand how layers are added with `+`
+- Modify a simple plot
+
+# The Core `ggplot` Pattern
+
+Most `ggplot2` figures follow the same basic pattern:
+
+```r
+ggplot(data, aes(...)) +
+  geom_...
+```
+
+or
+
+```r
+data %>%
+  ggplot(aes(...)) +
+  geom_...
+```
+
+The three essential pieces are:
+
+| Piece | Purpose |
+|---|---|
+| Data | The data frame being plotted |
+| Aesthetics | Variables mapped to visual features |
+| Geom | The type of plot to draw |
+
+# Component 1: Data
+
+The first argument tells `ggplot` where the data live.
+
+```r
+ggplot(
+  oswego,
+  aes(x = age)
+)
+```
+
+Here:
+
+```r
+oswego
+```
+
+is the dataset.
+
+Every `ggplot` starts with a data frame.
+
+# Component 2: Aesthetics
+
+Aesthetics determine which variables are connected to visual features.
+
+```r
+aes(
+  x = age
+)
+```
+
+This tells `ggplot`:
+
+> Put `age` on the x-axis.
+
+Later we will use aesthetics such as:
+
+```r
+x
+y
+fill
+color
+group
+```
+
+# Component 3: Geometries
+
+Geometries determine what type of plot to draw.
+
+Common geoms include:
+
+| Geom | Plot Type |
+|---|---|
+| `geom_histogram()` | Histogram |
+| `geom_bar()` | Bar chart from raw data |
+| `geom_col()` | Bar chart from summarized data |
+| `geom_point()` | Scatterplot |
+| `geom_boxplot()` | Boxplot |
+| `geom_density()` | Density plot |
+
+
+# The Plus Sign Adds Layers
+
+`ggplot2` builds figures layer by layer.
+
+```r
+ggplot(
+  oswego,
+  aes(x = age)
+) +
+  geom_histogram()
+```
+
+The `+` adds a layer.
+
+Later we will add layers such as:
+
+```r
+labs()
+theme_classic()
+facet_wrap()
+```
+
+# Putting It Together
+
+```{r}
+#| echo: true
+ggplot(oswego, aes(x = age)) +
+  geom_histogram()
+```
+
+Read this as:
+
+1. Use the `oswego` dataset
+2. Put `age` on the x-axis
+3. Draw a histogram
+
+# Exercise: Find the Missing Piece
+
+What is missing?
+
+```r
+ggplot(oswego) +
+  geom_histogram()
+```
+
+# Exercise: Modify the Code
+
+Goal:
+
+> Create a histogram of `timesupper` instead of `age`.
+
+Start with:
+
+```r
+ggplot(
+  oswego,
+  aes(x = age)
+) +
+  geom_histogram()
+```
+
+Modify the code.
+
+# Checkpoint: Grammar of Graphics
+
+## You should now be able to:
+
+- Recognize the basic `ggplot()` structure
+- Identify the dataset
+- Identify variables inside `aes()`
+- Identify the geom
+- Explain why `+` is used
+
+## Key ideas
+
+- `ggplot2` builds figures from layers.
+- Data, aesthetics, and geoms work together.
+- A plot usually needs both aesthetics and at least one geom.
+
+<div class="question">
+Questions before we move to common plot types?
+</div>
+
+# Part II
+
+## Histograms and Bar Charts
+
+<div class="part">Distributions and categorical counts</div>
+
+# Part II Learning Goals
+
+By the end of this section, you should be able to:
+
+- Create histograms for numeric variables
+- Change the number of bins in a histogram
+- Create bar charts for categorical or logical variables
+- Explain what `geom_bar()` computes automatically
+- Explain when to use `geom_col()`
+- Recognize the difference between raw data and summarized data in plots
+
+# Histograms
+
+Histograms are used for numeric variables.
+
+Common examples:
+
+- Age
+- Weight
+- Blood pressure
+- Time to symptom onset
+- Time since exposure
+
+A histogram helps show the distribution of a variable.
+
+# First Histogram
+
+```{r}
+#| echo: true
+ggplot(
+  oswego,
+  aes(x = age)
+) +
+  geom_histogram()
+```
+
+This creates a histogram of attendee ages.
+
+Each bar represents a range of ages.
+
+The height of each bar is the number of observations in that range.
+
+# Interpreting Histograms
+
+Histograms can help answer questions like:
+
+- What values are common?
+- What values are rare?
+- Is the distribution roughly symmetric?
+- Are there unusual values?
+- Is the distribution concentrated in one region?
+
+For this dataset, an age histogram gives a quick sense of who attended the supper.
+
+# Histogram Bins
+
+Histograms group numeric values into bins.
+
+Default:
+
+```r
+geom_histogram()
+```
+
+Custom number of bins:
+
+```r
+geom_histogram(
+  bins = 10
+)
+```
+
+The number of bins affects the appearance of the plot.
+
+# Fewer Bins
+
+```{r}
+#| echo: true
+ggplot(oswego, aes(x = age)) +
+  geom_histogram(bins = 10)
+```
+
+Fewer bins usually produce:
+
+- a smoother appearance
+- less detail
+- a broader sense of the distribution
+
+# More Bins
+
+```{r}
+#| echo: true
+ggplot(oswego, aes(x = age)) +
+  geom_histogram(bins = 30)
+```
+
+More bins usually produce:
+
+- more detail
+- more variation across bars
+- potentially more noise
+
+# Exercise: Modify the Code
+
+Goal:
+
+> Create an age histogram using 25 bins.
+
+Start with:
+
+```r
+ggplot(
+  oswego,
+  aes(x = age)
+) +
+  geom_histogram()
+```
+
+Modify the code.
+
+# Exercise: Predict the Output
+
+What do you expect to change?
+
+```r
+ggplot(
+  oswego,
+  aes(x = age)
+) +
+  geom_histogram(
+    bins = 50
+  )
+```
+
+Question:
+
+Will the figure become smoother or more detailed?
+
+# Bar Charts
+
+Bar charts are used for categorical or logical variables.
+
+Common examples:
+
+- Sex
+- Illness status
+- Exposure status
+- County
+- Vaccination status
+
+A bar chart shows counts by category.
+
+# First Bar Chart
+
+```{r}
+#| echo: true
+ggplot(oswego, aes(x = ill)) +
+  geom_bar()
+```
+
+Because `ill` is logical, the x-axis categories are:
+
+```r
+FALSE
+TRUE
+```
+
+This shows counts of non-cases and cases.
+
+# What Does `geom_bar()` Do?
+
+`geom_bar()` computes counts automatically.
+
+```r
+ggplot(
+  oswego,
+  aes(x = ill)
+) +
+  geom_bar()
+```
+
+is conceptually similar to:
+
+```r
+oswego %>%
+  count(ill)
+```
+
+You do not need to precompute counts before using `geom_bar()`.
+
+# Another Bar Chart
+
+```{r}
+#| echo: true
+ggplot(oswego, aes(x = sex)) +
+  geom_bar()
+```
+
+This shows the number of observations in each sex category.
+
+The height of each bar is a count.
+
+# `geom_col()`
+
+`geom_col()` is different.
+
+It expects you to provide both:
+
+- an x variable
+- a y variable
+
+Example:
+
+```{r}
+#| echo: true
+ill_counts <- oswego %>%
+  count(ill)
+
+ggplot(ill_counts, aes(x = ill, y = n)) +
+  geom_col()
+```
+
+# `geom_bar()` vs `geom_col()`
+
+| Function | Data Required | What It Does |
+|---|---|---|
+| `geom_bar()` | Raw data | Counts rows automatically |
+| `geom_col()` | Summarized data | Uses existing y-values |
+
+Use `geom_bar()` when you want `ggplot` to count.
+
+Use `geom_col()` when you already have counts or rates.
+
+# Exercise: Which Geom?
+
+You have this dataset:
+
+```r
+jello_counts <- oswego %>%
+  count(jello)
+```
+
+You want to plot `n` by `jello`.
+
+Should you use:
+
+```r
+geom_bar()
+```
+
+or
+
+```r
+geom_col()
+```
+
+Why?
+
+# Plotting Proportions
+
+Sometimes we want proportions instead of counts.
+
+```{r}
+#| echo: true
+ill_props <- oswego %>%
+  count(ill) %>%
+  mutate(
+    prop = n / sum(n)
+  )
+```
+
+Then plot:
+
+```{r}
+#| echo: true
+ggplot(ill_props,aes(x = ill, y = prop)) +
+  geom_col()
+```
+
+# Exercise: Modify the Code
+
+Goal:
+
+> Plot proportions of illness status rather than counts.
+
+Start with:
+
+```r
+ill_counts <- oswego %>%
+  count(ill)
+
+ggplot(
+  ill_counts,
+  aes(x = ill, y = n)
+) +
+  geom_col()
+```
+
+Modify the code to create and plot a proportion.
+
+# Exercise: Find the Error
+
+What is wrong or confusing about this code?
+
+```r
+ill_counts <- oswego %>%
+  count(ill)
+
+ggplot(
+  ill_counts,
+  aes(x = ill)
+) +
+  geom_bar()
+```
+
+Hint:
+
+`ill_counts` is already summarized.
+
+# Checkpoint: Histograms and Bar Charts
+
+## You should now be able to:
+
+- Create histograms for numeric variables
+- Adjust histogram bins
+- Create bar charts for categorical or logical variables
+- Explain what `geom_bar()` counts
+- Use `geom_col()` with summarized data
+- Plot counts or proportions
+
+## Key ideas
+
+- Histograms are for numeric distributions.
+- Bar charts are for categorical counts.
+- `geom_bar()` counts rows automatically.
+- `geom_col()` uses precomputed y-values.
+
+<div class="question">
+Questions before we continue to scatterplots, boxplots, and density plots?
+</div>
+
+
+# Part III
+
+## Scatterplots, Boxplots, and Density Plots
+
+<div class="part">Comparing variables and comparing groups</div>
+
+# Part III Learning Goals
+
+By the end of this section, you should be able to:
+
+- Create scatterplots
+- Create boxplots
+- Create density plots
+- Choose an appropriate geom for a question
+- Interpret common plot types
+- Recognize when a variable is appropriate for a particular geom
+
+# Choosing the Right Plot
+
+A useful question is:
+
+> What type of variable am I trying to visualize?
+
+| Goal | Typical Plot |
+|---|---|
+| Distribution of one numeric variable | Histogram |
+| Distribution of one numeric variable | Density plot |
+| Relationship between two numeric variables | Scatterplot |
+| Compare a numeric variable across groups | Boxplot |
+| Compare counts across categories | Bar chart |
+
+# Scatterplots
+
+Scatterplots are used when:
+
+- X is numeric
+- Y is numeric
+
+Goal:
+
+- Explore relationships between variables
+- Identify clusters
+- Identify outliers
+- Assess trends
+
+# First Scatterplot
+
+```{r}
+#| echo: true
+ggplot(oswego, aes(x = age, y = timesupper)) +
+  geom_point()
+```
+
+Each point represents one attendee.
+
+# Reading a Scatterplot
+
+Questions to ask:
+
+- Is there a positive relationship?
+- Is there a negative relationship?
+- Is there no obvious relationship?
+- Are there unusual observations?
+
+Scatterplots are often the first plot used when comparing two numeric variables.
+
+# Exercise: Predict the Output
+
+What do you think this will look like?
+
+```r
+ggplot(
+  oswego,
+  aes(
+    x = age,
+    y = timesupper
+  )
+) +
+  geom_point()
+```
+
+Questions:
+
+- What does each point represent?
+- What variable is on each axis?
+
+# Boxplots
+
+Boxplots compare a numeric variable across groups.
+
+Common examples:
+
+- Age by illness status
+- Blood pressure by treatment group
+
+# First Boxplot
+
+```{r}
+#| echo: true
+ggplot(oswego, aes(x = ill, y = age)) +
+  geom_boxplot()
+```
+
+# What Does a Boxplot Show?
+
+A boxplot summarizes:
+
+- Median
+- Lower quartile
+- Upper quartile
+- Potential outliers
+
+It is a compact summary of a distribution.
+
+# Interpreting the Median
+
+The line inside the box is the median.
+
+Questions:
+
+- Is one group's median larger?
+- Are the groups similar?
+- Is there substantial variability?
+
+# Boxplots and Outliers
+
+Points outside the whiskers are often plotted separately.
+
+These are potential outliers.
+
+Outliers are not necessarily errors.
+
+They are observations worth investigating.
+
+# Boxplot + Jitter
+
+A useful combination:
+
+```{r}
+#| echo: true
+ggplot(oswego,aes(x = ill, y = age)) +
+  geom_boxplot() +
+  geom_jitter(
+    width = 0.1, # how spread out points are on x-axis
+    alpha = 0.5  # transparency
+  )
+```
+
+This shows both:
+
+- summary information
+- individual observations
+
+# Exercise: Predict the Output
+
+What will this compare?
+
+```r
+ggplot(
+  oswego,
+  aes(
+    x = milk,
+    y = age
+  )
+) +
+  geom_boxplot()
+```
+
+# Exercise: Write the Code
+
+Goal:
+
+> Compare `timesupper` across illness groups.
+
+# Density Plots
+
+Density plots are another way to visualize a distribution.
+
+Example:
+
+```{r}
+#| echo: true
+ggplot(oswego, aes(age)) +
+  geom_density()
+```
+
+# Histogram vs Density Plot
+
+Histogram:
+
+```r
+geom_histogram()
+```
+
+Density:
+
+```r
+geom_density()
+```
+
+Both display a distribution.
+
+Density plots produce a smooth estimate.
+
+# Why Use Density Plots?
+
+Density plots can:
+
+- Emphasize overall shape
+- Remove dependence on bin selection
+- Make group comparisons easier
+
+# Overlaying Groups
+
+Example:
+
+```{r}
+#| echo: true
+ggplot(oswego, aes(x = age, color = ill)) +
+  geom_density()
+```
+
+This creates one density curve for each illness group.
+
+# Filled Density Curves
+
+```{r}
+#| echo: true
+ggplot(oswego, aes(x = age, fill = ill)) +
+  geom_density(alpha = 0.4)
+```
+
+Notice the use of:
+
+```r
+fill = ill
+```
+
+inside `aes()`.
+
+# Common Mistake
+
+Not all variables belong in every geom.
+
+Example:
+
+```{r}
+#| echo: true
+ggplot(oswego, aes(x = age, y = ill)) +
+  geom_point()
+```
+
+This technically works.
+
+But is it the best visualization?
+
+Often a boxplot or density plot is more informative.
+
+# Checkpoint: Scatterplots
+
+You should now be able to:
+
+- Create scatterplots
+- Interpret points
+- Use transparency
+- Use jitter
+
+## Key ideas
+
+- Scatterplots compare two numeric variables.
+- Each point is an observation.
+- Transparency and jitter reduce overplotting.
+
+<div class="question">
+Questions before we move on?
+</div>
+
+# Checkpoint: Boxplots and Density Plots
+
+You should now be able to:
+
+- Create boxplots
+- Create density plots
+- Compare groups visually
+- Choose an appropriate plot type
+
+## Key ideas
+
+- Boxplots summarize distributions.
+- Density plots provide a smooth distribution estimate.
+- Different plots answer different questions.
+- Choosing the right plot is often more important than customizing it.
+
+<div class="question">
+Questions before we move to aesthetics?
+</div>
+
+
+# Part IV
+
+## Aesthetics
+
+<div class="part">Controlling how variables appear in a plot</div>
+
+# Part IV Learning Goals
+
+By the end of this section, you should be able to:
+
+- Understand the purpose of `aes()`
+- Map variables to visual properties
+- Distinguish mapping from setting
+- Use `fill`
+- Use `color`
+- Use `group`
+- Interpret legends
+- Diagnose common aesthetic mistakes
+
+# What Are Aesthetics?
+
+Aesthetics connect variables to visual features.
+
+Examples:
+
+```r
+aes(
+  x = age,
+  fill = ill
+)
+```
+
+Possible aesthetics include:
+
+- `x`
+- `y`
+- `fill`
+- `color`
+- `group`
+- `size`
+- `shape`
+
+# A Simple Mapping
+
+```{r}
+#| echo: true
+ggplot(oswego,aes(x = age)) +
+  geom_histogram()
+```
+
+The variable:
+
+```r
+age
+```
+
+is mapped to the x-axis.
+
+# Mapping Additional Variables
+
+```r
+ggplot(
+  oswego,
+  aes(
+    x = age,
+    fill = ill
+  )
+) +
+  geom_histogram()
+```
+
+Now illness status influences the appearance of the plot.
+
+# A Key Idea
+
+Variables belong inside:
+
+```r
+aes()
+```
+
+because they come from the dataset.
+
+Example:
+
+```r
+aes(fill = ill)
+```
+
+Here:
+
+```r
+ill
+```
+
+is a variable.
+
+# Mapping vs Setting
+
+This is one of the most important concepts in ggplot.
+
+Mapped:
+
+```r
+aes(fill = ill)
+```
+
+Set:
+
+```r
+fill = "steelblue"
+```
+
+These are not the same thing. Notice that aes is not used in the first example.
+
+# Mapping Example
+
+```{r}
+#| echo: true
+ggplot(oswego, aes(x = age, fill = ill)) +
+  geom_histogram()
+```
+
+Result:
+
+- Multiple groups
+- Automatic legend
+- Colors determined by illness status
+
+# Setting Example
+
+```{r}
+#| echo: true
+ggplot(oswego, aes(x = age)) +
+  geom_histogram(fill = "steelblue")
+```
+
+Result:
+
+- One color
+- No grouping
+- No legend
+
+# Comparing the Two
+
+Mapped:
+
+```r
+aes(fill = ill)
+```
+
+Question answered:
+
+> Do the groups differ?
+
+Set:
+
+```r
+fill = "steelblue"
+```
+
+Question answered:
+
+> Show everything using the same color.
+
+# Common Mistake
+
+```r
+aes(fill = "ill")
+```
+
+Notice the quotation marks.
+
+This is usually wrong.
+
+# Why Is It Wrong?
+
+```r
+aes(fill = ill)
+```
+
+means:
+
+> Use the variable named ill.
+
+But:
+
+```r
+aes(fill = "ill")
+```
+
+means:
+
+> Treat the text "ill" as a category.
+
+Very different behavior.
+
+# Exercise: Find the Bug
+
+What is wrong?
+
+```r
+ggplot(
+  oswego,
+  aes(
+    x = age,
+    fill = "vanilla"
+  )
+) +
+  geom_histogram()
+```
+
+How would you fix it?
+
+# Color vs Fill
+
+Another common source of confusion.
+
+```r
+fill
+```
+
+controls interior color.
+
+```r
+color
+```
+
+controls outlines or lines.
+
+# Fill Example
+
+```{r}
+#| echo: true
+ggplot(oswego,aes(x = age,fill = ill)) +
+  geom_histogram()
+```
+
+# Color Example
+
+```{r}
+#| echo: true
+ggplot(oswego,aes(x = age,color = ill)) +
+  geom_density()
+```
+
+The density curves receive different colors.
+
+# When Do We Usually Use Fill?
+
+Common examples:
+
+```r
+geom_bar()
+geom_histogram()
+geom_density()
+geom_boxplot()
+```
+
+# When Do We Usually Use Color?
+
+Common examples:
+
+```r
+geom_line()
+geom_density()
+geom_point()
+```
+
+# Legends
+
+Mapped aesthetics usually create legends automatically.
+
+Example:
+
+```r
+aes(fill = ill)
+```
+
+produces a legend describing the illness groups.
+
+# No Mapping, No Legend
+
+```r
+geom_histogram(
+  fill = "steelblue"
+)
+```
+
+does not require a legend.
+
+There is only one color.
+
+# Using Multiple Aesthetics
+
+```{r}
+#| echo: true
+ggplot(oswego,
+  aes(
+    x = age,
+    fill = ill,
+    color = ill
+  )
+) +
+  geom_density(
+    alpha = 0.3
+  )
+```
+
+One variable can influence multiple visual properties.
+
+# Grouping
+
+Sometimes we want separate calculations for groups.
+
+The `group` aesthetic controls this.
+
+```r
+aes(
+  group = ill
+)
+```
+
+# Why Group Matters
+
+Imagine:
+
+```r
+ggplot(
+  oswego,
+  aes(
+    x = age,
+    color = ill
+  )
+) +
+  geom_density()
+```
+
+Separate density curves are computed.
+
+Grouping happens automatically.
+
+# Explicit Grouping
+
+Sometimes we specify it directly.
+
+```{r}
+#| echo: true
+ggplot(
+  oswego,
+  aes(
+    x = age,
+    group = ill
+  )
+) +
+  geom_density()
+```
+
+# Exercise: Mapping or Setting?
+
+Should this go inside or outside `aes()`?
+
+Question 1:
+
+```r
+ill
+```
+
+Question 2:
+
+```r
+"steelblue"
+```
+
+Question 3:
+
+```r
+sex
+```
+
+# Practical Rule
+
+Ask yourself:
+
+> Is this coming from a variable in my dataset?
+
+If yes:
+
+```r
+aes(...)
+```
+
+If no:
+
+Place it outside `aes()`.
+
+# Example
+
+Variable:
+
+```r
+aes(fill = ill)
+```
+
+Constant:
+
+```r
+fill = "steelblue"
+```
+
+# Common Error
+
+```r
+ggplot(
+  oswego,
+  aes(
+    x = age
+  )
+) +
+  geom_histogram(
+    fill = ill
+  )
+```
+
+Why does this fail?
+
+Because:
+
+```r
+ill
+```
+
+is a variable and should be mapped.
+
+# Another Common Error
+
+```r
+ggplot(
+  oswego,
+  aes(
+    x = age,
+    fill = ill
+  )
+) +
+  geom_histogram(
+    fill = "steelblue"
+  )
+```
+
+Now the mapped value and set value compete.
+
+The result is often confusing.
+
+# Checkpoint: Aesthetics
+
+You should now be able to:
+
+- Explain what `aes()` does
+- Distinguish mapping from setting
+- Use `fill`
+- Use `color`
+- Use `group`
+- Interpret legends
+
+## Key Ideas
+
+- Variables belong inside `aes()`.
+- Constants belong outside `aes()`.
+- Mapping creates groups and legends.
+- Setting changes appearance without creating groups.
+
+<div class="question">
+Questions before we start creating grouped plots?
+</div>
+
+# Part V
+
+## Grouped Plots and Position Adjustments
+
+<div class="part">Comparing groups within a figure</div>
+
+# Part V Learning Goals
+
+By the end of this section, you should be able to:
+
+- Create grouped bar charts
+- Understand stacked bars
+- Understand dodged bars
+- Understand filled bars
+- Choose an appropriate position adjustment
+
+# Default Behavior
+
+Going back to our bar chart from earlier:
+
+```{r}
+#| echo: true
+ggplot(oswego,
+  aes(
+    x = sex,
+    fill = ill
+  )
+) +
+  geom_bar()
+```
+
+Bars are stacked by default.
+
+# Position = "stack"
+
+```r
+geom_bar(
+  position = "stack"
+)
+```
+
+This is the default.
+
+Each bar is divided into subgroups.
+
+# Interpreting Stacked Bars
+
+Questions answered:
+
+- How many observations are there?
+- What is the subgroup composition?
+
+Questions that are harder:
+
+- How do subgroup counts compare directly?
+
+# Position = "dodge"
+
+```{r}
+#| echo: true
+ggplot(
+  oswego,
+  aes(
+    x = sex,
+    fill = ill
+  )
+) +
+  geom_bar(
+    position = "dodge"
+  )
+```
+
+Groups appear side-by-side.
+
+# Why Use Dodge?
+
+Dodged bars make it easier to compare counts across groups.
+
+Example:
+
+- Cases versus non-cases
+- Within males and females
+
+# Position = "fill"
+
+```{r}
+#| echo: true
+ggplot(
+  oswego,
+  aes(
+    x = sex,
+    fill = ill
+  )
+) +
+  geom_bar(
+    position = "fill"
+  )
+```
+
+Bars are scaled to the same height.
+
+# What Does Fill Show?
+
+Each bar represents:
+
+```text
+100%
+```
+
+The focus becomes:
+
+- proportions
+- composition
+
+rather than counts. 
+
+Notice the y-axis label should likely be changed when doing this.
+
+# Comparing the Three
+
+| Position | Best For |
+|---|---|
+| stack | Total counts and composition |
+| dodge | Comparing counts |
+| fill | Comparing proportions |
+
+# Checkpoint: Grouped Plots
+
+You should now be able to:
+
+- Create grouped bar charts
+- Use stack, dodge, and fill
+- Interpret grouped displays
+
+## Key Ideas
+
+- Position adjustments change how groups are displayed.
+- Different position choices answer different questions.
+- There is rarely a single “correct” plot.
+
+<div class="question">
+Questions before we move to faceting?
+</div>
+
+# Part VI
+
+## Faceting
+
+<div class="part">Creating multiple plots from a single plotting command</div>
+
+# Part VI Learning Goals
+
+By the end of this section, you should be able to:
+
+- Explain what faceting does
+- Use `facet_wrap()`
+- Use `facet_grid()`
+- Choose appropriate faceting variables
+- Interpret faceted plots
+- Decide when faceting is preferable to color or fill
+
+# What Is Faceting?
+
+Faceting splits a dataset into groups and creates a separate panel for each group.
+
+Instead of:
+
+```r
+one plot
+```
+
+you get:
+
+```r
+many related plots
+```
+
+with identical axes and (optionally) scales.
+
+# Why Use Faceting?
+
+Faceting is useful when:
+
+- Comparing groups
+- Looking for patterns within groups
+- Avoiding cluttered plots
+- Exploring interactions
+
+# First Example
+
+```{r}
+#| echo: true
+ggplot(oswego, aes(x = age)) +
+  geom_histogram() +
+  facet_wrap(~ sex)
+```
+
+# Reading Faceted Plots
+
+Ask:
+
+- Do the distributions differ?
+- Are the centers similar?
+- Is one group more variable?
+- Are there outliers in only one group?
+
+# Another Example
+
+```{r}
+#| echo: true
+ggplot(oswego,
+  aes(
+    x = age,
+    y = timesupper
+  )
+) +
+  geom_point() +
+  facet_wrap(~ ill)
+```
+
+Each panel contains a separate scatterplot.
+
+# When Should You Facet?
+
+Suppose you want to compare age distributions across illness groups.
+
+Options:
+
+```r
+fill = ill
+```
+
+or
+
+```r
+facet_wrap(~ ill)
+```
+
+Both are reasonable.
+
+Faceting often becomes easier when plots become crowded.
+
+# Practical Advice
+
+Good faceting variables:
+
+- Sex
+- Illness status
+- Exposure status
+
+Less useful:
+
+- Variables with dozens of categories
+
+Too many panels become difficult to read.
+
+# facet_grid()
+
+A second faceting approach:
+
+```r
+facet_grid(
+  sex ~ ill
+)
+```
+
+# How Does facet_grid Work?
+
+Rows:
+
+```r
+sex
+```
+
+Columns:
+
+```r
+ill
+```
+
+Result:
+
+A matrix of plots.
+
+# Example
+
+```{r}
+#| echo: true
+ggplot(oswego, aes(age)) +
+  geom_histogram() +
+  facet_grid(
+    sex ~ ill
+  )
+```
+
+# When Is facet_grid Useful?
+
+Useful when you want to compare two grouping variables simultaneously.
+
+Examples:
+
+- Sex × Illness
+- Treatment × Timepoint
+- Region × Vaccination status
+
+# Exercise
+
+Modify:
+
+```r
+facet_wrap(~ sex)
+```
+
+to create panels using illness status.
+
+# Exercise
+
+Modify:
+
+```r
+facet_wrap(~ ill)
+```
+
+to create a grid using:
+
+```r
+sex
+```
+
+and
+
+```r
+ill
+```
+
+# Faceting vs Color
+
+Color:
+
+```r
+aes(color = ill)
+```
+
+Advantages:
+
+- Compact
+- Single panel
+
+Disadvantages:
+
+- Can become cluttered
+
+# Faceting vs Color
+
+Faceting:
+
+```r
+facet_wrap(~ ill)
+```
+
+Advantages:
+
+- Easier comparison
+- Less overlap
+
+Disadvantages:
+
+- Requires more space
+
+# Practical Rule
+
+If curves overlap heavily:
+
+Try:
+
+```r
+facet_wrap()
+```
+
+If there are only a few groups:
+
+Try:
+
+```r
+color =
+fill =
+```
+
+Both approaches are useful.
+
+# Checkpoint: Faceting
+
+You should now be able to:
+
+- Use `facet_wrap()`
+- Use `facet_grid()`
+- Interpret faceted plots
+- Choose between faceting and color grouping
+
+## Key Ideas
+
+- Faceting creates multiple panels.
+- Panels represent subsets of the data.
+- Faceting is often easier to interpret than overlapping groups.
+
+<div class="question">
+Questions before we start improving plots?
+</div>
+
+# Part VII
+
+## Practical Plot Improvements
+
+<div class="part">Making plots easier to read and easier to communicate</div>
+
+# Part VII Learning Goals
+
+By the end of this section, you should be able to:
+
+- Add titles
+- Add axis labels
+- Choose a theme
+- Flip coordinates
+- Reorder categories
+- Build a polished figure step-by-step
+
+# Why Improve Plots?
+
+Default plots are often useful.
+
+But polished plots are:
+
+- Easier to read
+- Easier to interpret
+- More professional
+- Better for reports and presentations
+
+# Plot Building Strategy
+
+Start simple.
+
+Then add:
+
+1. Geometry
+2. Labels
+3. Theme
+4. Additional refinements
+
+# Step 1
+
+```{r}
+#| echo: true
+ggplot(
+  oswego,
+  aes(age)
+)
+```
+
+Not very useful yet.
+
+# Step 2
+
+```{r}
+#| echo: true
+ggplot(
+  oswego,
+  aes(age)
+) +
+  geom_histogram()
+```
+
+Now we have a figure.
+
+# Step 3
+
+```{r}
+#| echo: true
+ggplot(
+  oswego,
+  aes(age)
+) +
+  geom_histogram() +
+  labs(
+    title = "Age Distribution"
+  )
+```
+
+# Step 4
+
+```{r}
+#| echo: true
+ggplot(
+  oswego,
+  aes(age)
+) +
+  geom_histogram() +
+  labs(
+    title = "Age Distribution"
+  ) +
+  theme_classic()
+```
+
+# Adding Labels
+
+Use:
+
+```r
+labs()
+```
+
+to add:
+
+- Title
+- Subtitle
+- Axis labels
+- Captions
+
+# Example
+
+```{r}
+#| echo: true
+ggplot(
+  oswego,
+  aes(age)
+) +
+  geom_histogram() +
+  labs(
+    title = "Age Distribution of Attendees",
+    x = "Age (years)",
+    y = "Count"
+  )
+```
+
+# Why Labels Matter
+
+Compare:
+
+```r
+x
+y
+```
+
+versus
+
+```r
+Age (years)
+Count
+```
+
+Clear labels reduce confusion.
+
+# Themes
+
+Themes control overall appearance.
+
+Common examples:
+
+```r
+theme_classic()
+theme_bw()
+theme_minimal()
+```
+
+# theme_classic()
+
+```{r}
+#| echo: true
+ggplot(
+  oswego,
+  aes(age)
+) +
+  geom_histogram() +
+  theme_classic()
+```
+
+Produces a clean appearance.
+
+# theme_bw()
+
+```{r}
+#| echo: true
+ggplot(
+  oswego,
+  aes(age)
+) +
+  geom_histogram() +
+  theme_bw()
+```
+
+Adds grid lines.
+
+# Which Theme Should You Use?
+
+There is no universally correct answer.
+
+For most scientific figures:
+
+```r
+theme_classic()
+```
+
+is a reasonable default.
+
+# Reordering Categories
+
+Categorical variables often appear alphabetically.
+
+Example:
+
+```{r}
+#| echo: true
+food_long <- oswego %>%
+  pivot_longer(
+    cols = bakedham:fruitsalad,
+    names_to = "food",
+    values_to = "ate"
+  )
+
+head(food_long)
+```
+
+# Example Data
+
+```{r}
+#| echo: true
+food_counts <- food_long %>%
+  filter(ate) %>%
+  count(food)
+```
+
+# Default Ordering
+
+```{r}
+#| echo: true
+ggplot(food_counts, aes(x = food, y = n)) +
+  geom_col()
+```
+
+Categories appear alphabetically.
+
+# Reordering by Frequency
+
+```{r}
+#| echo: true
+ggplot(food_counts,
+  aes(
+    x = reorder(food, n),
+    y = n
+  )) +
+  geom_col()
+```
+
+Now foods are ordered by count.
+
+# Why Reorder?
+
+Questions become easier to answer.
+
+Instead of:
+
+```text
+alphabetical order
+```
+
+we see:
+
+```text
+smallest → largest
+```
+
+or
+
+```text
+largest → smallest
+```
+
+# Flipping Coordinates
+
+Long category labels often create crowded figures.
+
+Use:
+
+```r
+coord_flip()
+```
+
+# Example
+
+```{r}
+#| echo: true
+ggplot(food_counts, aes(x = reorder(food, n),y = n)) +
+  geom_col() +
+  coord_flip()
+```
+
+# Why Use coord_flip()?
+
+Benefits:
+
+- Easier to read labels
+- Better for long category names
+- Often preferred for ranked bar charts
+
+# Exercise: Predict the Output
+
+What changes when:
+
+```r
+coord_flip()
+```
+
+is added?
+
+# Building a Complete Figure
+
+Step 1:
+
+```{r}
+#| echo: true
+ggplot(
+  food_counts,
+  aes(
+    x = food,
+    y = n
+  )
+)
+```
+
+# Step 2
+
+```{r}
+#| echo: true
+ggplot(
+  food_counts,
+  aes(
+    x = food,
+    y = n
+  )
+) +
+  geom_col()
+```
+
+# Step 3
+
+```{r}
+#| echo: true
+ggplot(
+  food_counts,
+  aes(
+    x = reorder(food, n),
+    y = n
+  )
+) +
+  geom_col()
+```
+
+# Step 4
+
+```{r}
+#| echo: true
+ggplot(
+  food_counts,
+  aes(
+    x = reorder(food, n),
+    y = n
+  )
+) +
+  geom_col() +
+  coord_flip()
+```
+
+# Step 5
+
+```{r}
+#| echo: true
+ggplot(
+  food_counts,
+  aes(
+    x = reorder(food, n),
+    y = n
+  )
+) +
+  geom_col() +
+  coord_flip() +
+  labs(
+    title = "Food Exposure Frequencies",
+    x = "Food",
+    y = "Number of Attendees"
+  ) +
+  theme_classic()
+```
+
+# Checkpoint: Improving Figures
+
+You should now be able to:
+
+- Add labels
+- Add themes
+- Reorder categories
+- Flip coordinates
+- Build plots incrementally
+
+## Key Ideas
+
+- Start simple.
+- Improve plots step-by-step.
+- Labels matter.
+- Ordering categories often improves interpretation.
+- Small improvements can dramatically improve readability.
+
+<div class="question">
+Questions before we start working with the food exposure data?
+</div>
+
+
+# Part VIII
+
+## Food Exposure Visualizations
+
+<div class="part">Using reshaped data to create richer plots</div>
+
+# Part VIII Learning Goals
+
+By the end of this section, you should be able to:
+
+- Reshape food exposure variables into long format
+- Count food exposures
+- Create ranked bar charts
+- Compare food exposure by illness status
+- Plot counts and proportions
+- Use food exposure data to build more informative visual summaries
+
+# Why Reshape the Food Variables?
+
+The Oswego dataset contains many food exposure variables.
+
+Examples:
+
+```r
+bakedham
+spinach
+mashedpota
+cabbagesal
+jello
+rolls
+brownbread
+milk
+coffee
+water
+cakes
+vanilla
+chocolate
+fruitsalad
+```
+
+Each variable indicates whether a person ate that food.
+
+# Food Variables Are Wide
+
+In the original dataset, each food is a separate column.
+
+```text
+id | ill | bakedham | spinach | milk | vanilla | chocolate
+```
+
+This format is useful for some analyses.
+
+But for plotting many foods, it is often easier to use long format.
+
+# Long Format for Food Exposures
+
+Long format stores food names in one column and exposure status in another.
+
+```text
+id | ill | food      | ate
+1  | TRUE | bakedham  | TRUE
+1  | TRUE | spinach   | FALSE
+1  | TRUE | vanilla   | TRUE
+```
+
+This structure is much easier to summarize and plot.
+
+# Create `food_long`
+
+In the previous section, we did this:
+
+```r
+food_long <- oswego %>%
+  pivot_longer(
+    cols = bakedham:fruitsalad,
+    names_to = "food",
+    values_to = "ate"
+  )
+```
+
+This creates one row per person-food combination.
+
+# What Does One Row Represent?
+
+In `oswego`, one row is:
+
+```text
+one attendee
+```
+
+In `food_long`, one row is:
+
+```text
+one attendee-food combination
+```
+
+<div class="callout">
+After pivoting, the number of rows increases because each person contributes multiple food rows.
+</div>
+
+# Exercise: Predict the Output
+
+What will this count?
+
+```r
+food_long %>%
+  count(food)
+```
+
+Questions:
+
+- How many rows should there be?
+- What does the `n` column represent?
+- Does this tell us how many people ate each food?
+
+# Counting Food Exposures
+
+To count people who ate each food, first keep rows where `ate` is `TRUE`.
+
+```r
+food_counts <- food_long %>%
+  filter(ate) %>%
+  count(food)
+```
+
+This gives one row per food, with the number of attendees who ate it.
+
+# Exposure Counts by Illness Status
+
+Now we can count food exposures separately for cases and non-cases.
+
+```{r}
+#| echo: true
+food_ill_counts <- food_long %>%
+  filter(ate) %>%
+  count(food, ill)
+```
+
+This creates counts for each combination of:
+
+- food
+- illness status
+
+# Plot Exposure by Illness Status
+
+```{r}
+#| echo: true
+ggplot(
+  food_ill_counts,
+  aes(
+    x = reorder(food, n),
+    y = n,
+    fill = ill
+  )
+) +
+  geom_col() +
+  coord_flip()
+```
+
+This shows food exposure counts separated by illness status.
+
+# Interpreting This Plot
+
+Questions to ask:
+
+- Which foods were commonly eaten?
+- Among people who ate each food, how many became ill?
+- Are some foods more common among cases?
+- Are counts enough, or do we need proportions?
+
+<div class="callout">
+Counts can be useful, but outbreak investigations often require attack rates or proportions.
+</div>
+
+# Stacked vs Dodged Bars
+
+Stacked bars:
+
+```r
+geom_col()
+```
+
+Dodged bars:
+
+```r
+geom_col(
+  position = "dodge"
+)
+```
+
+Dodged bars often make group comparisons easier.
+
+# Dodged Food Exposure Plot
+
+```{r}
+#| echo: true
+ggplot(
+  food_ill_counts,
+  aes(
+    x = reorder(food, n),
+    y = n,
+    fill = ill
+  )
+) +
+  geom_col(
+    position = "dodge"
+  ) +
+  coord_flip()
+```
+
+# Proportions by Food
+
+Counts are not always enough.
+
+For each food, we may want the proportion of exposed attendees who became ill.
+
+```{r}
+#| echo: true
+food_attack <- food_long %>%
+  filter(ate) %>%
+  group_by(food) %>%
+  summarise(
+    n_exposed = n(),
+    attack_rate = mean(ill),
+    .groups = "drop"
+  )
+```
+
+Because `ill` is TRUE/FALSE, `mean(ill)` is the proportion ill.
+
+# Plot Food-Specific Attack Rates
+
+```{r}
+#| echo: true
+ggplot(
+  food_attack,
+  aes(
+    x = reorder(food, attack_rate),
+    y = attack_rate
+  )
+) +
+  geom_col() +
+  coord_flip()
+```
+
+This ranks foods by the proportion of exposed attendees who became ill.
+
+# Add Labels
+
+```{r}
+#| echo: true
+ggplot(
+  food_attack,
+  aes(
+    x = reorder(food, attack_rate),
+    y = attack_rate
+  )
+) +
+  geom_col() +
+  coord_flip() +
+  labs(
+    title = "Attack Rate by Food Exposure",
+    x = "Food",
+    y = "Proportion Ill Among Exposed"
+  ) +
+  theme_classic()
+```
+
+# Counts and Rates Answer Different Questions
+
+Counts answer:
+
+```text
+How many exposed attendees became ill?
+```
+
+Rates answer:
+
+```text
+Among exposed attendees, what proportion became ill?
+```
+
+Both can be useful.
+
+They are not the same.
+
+# Faceting Food Plots
+
+Faceting can help compare plots by illness status.
+
+```{r}
+#| echo: true
+food_long %>%
+  filter(ate) %>%
+  count(food, ill) %>%
+  ggplot(
+    aes(
+      x = reorder(food, n),
+      y = n
+    )
+  ) +
+  geom_col() +
+  coord_flip() +
+  facet_wrap(~ ill)
+```
+
+# What Does the Faceted Plot Show?
+
+Each panel corresponds to one illness group.
+
+Within each panel:
+
+- foods are shown
+- counts are displayed
+- food labels are easier to compare than in a crowded stacked plot
+
+# A More Complete Food Plot
+
+```{r}
+#| echo: true
+food_attack %>% ggplot(aes(x = reorder(food, attack_rate), y = attack_rate)) +
+  geom_col() +
+  coord_flip() +
+  labs(
+    title = "Attack Rate by Food Exposure",
+    subtitle = "Among attendees who ate each food",
+    x = "Food",
+    y = "Proportion Ill"
+  ) +
+  theme_classic()
+```
+
+# Interpreting Food Exposure Plots
+
+When interpreting food plots, consider:
+
+- How many people ate each food?
+- What proportion became ill?
+- Are there small denominators?
+- Are missing values present?
+- Is the association plausible?
+
+Visualization is a starting point, not the final analysis.
+
+# Checkpoint: Food Exposure Visualizations
+
+You should now be able to:
+
+- Reshape food columns into long format
+- Count food exposures
+- Plot ranked food exposure counts
+- Plot food exposure by illness status
+- Compute and plot food-specific attack rates
+
+## Key Ideas
+
+- Long format makes many plots easier.
+- Counts and proportions answer different questions.
+- `mean(ill)` works because `ill` is TRUE/FALSE.
+- Reordering and flipping coordinates often improve food exposure plots.
+
+<div class="question">
+Questions before we move to common ggplot errors?
+</div>
+
+
+# Part IX
+
+## Common ggplot Errors
+
+<div class="part">Learning to read and fix common mistakes</div>
+
+# Learning Goals
+
+- Recognize common ggplot errors
+- Interpret error messages
+- Debug plots systematically
+- Understand why mistakes occur
+
+# Error: Missing Aesthetic
+
+```r
+ggplot(oswego) +
+  geom_histogram()
+```
+
+Typical message:
+
+```text
+stat_bin() requires an x or y aesthetic
+```
+
+Why?
+
+A histogram needs a numeric variable.
+
+# Fix
+
+```r
+ggplot(
+  oswego,
+  aes(x = age)
+) +
+  geom_histogram()
+```
+
+# Error: Object Not Found
+
+```r
+ggplot(
+  oswego,
+  aes(x = agge)
+) +
+  geom_histogram()
+```
+
+Common causes:
+
+- Typo
+- Wrong variable name
+- Variable not in data frame
+
+# Diagnose
+
+```r
+names(oswego)
+```
+
+# Error: Forgot the Plus Sign
+
+```r
+ggplot(
+  oswego,
+  aes(age)
+)
+geom_histogram()
+```
+
+Each layer must be connected using `+`.
+
+# Error: Quoted Variable
+
+Wrong:
+
+```r
+aes(fill = "ill")
+```
+
+Correct:
+
+```r
+aes(fill = ill)
+```
+
+# Why?
+
+Inside `aes()`:
+
+```r
+ill
+```
+
+means variable.
+
+```r
+"ill"
+```
+
+means literal text.
+
+# Error: Wrong Geom
+
+```r
+ggplot(
+  oswego,
+  aes(age)
+) +
+  geom_bar()
+```
+
+This usually isn't what you want.
+
+For numeric distributions:
+
+```r
+geom_histogram()
+```
+
+is often more appropriate.
+
+# Error: Using Variables Outside aes()
+
+Wrong:
+
+```r
+geom_histogram(
+  fill = ill
+)
+```
+
+Correct:
+
+```r
+aes(fill = ill)
+```
+
+# Debugging Strategy
+
+1. Read the error
+2. Check variable names
+3. Check aesthetics
+4. Run code one layer at a time
+5. Build plots incrementally
+
+# Exercise
+
+Identify the bug:
+
+```r
+ggplot(
+  oswego,
+  aes(
+    x = age,
+    fill = "ill"
+  )
+) +
+  geom_histogram()
+```
+
+# Checkpoint
+
+You should now be able to:
+
+- Read common error messages
+- Diagnose mapping problems
+- Fix common ggplot mistakes
+
+
+
+
+# Part X
+
+## Tables with gt
+
+<div class="part">Creating polished tables</div>
+
+# Learning Goals
+
+- Create gt tables
+- Format numbers
+- Rename columns
+- Add titles
+- Improve readability
+
+# Why gt?
+
+`gt` creates publication-quality tables directly from data frames.
+
+# Basic Table
+
+```{r}
+#| echo: true
+library(gt)
+
+ill_counts <- oswego %>%
+  count(ill)
+
+ill_counts %>%
+  gt()
+```
+
+# Column Labels
+
+```{r}
+#| echo: true
+ill_counts %>%
+  gt() %>%
+  cols_label(
+    ill = "Illness Status",
+    n = "Count"
+  )
+```
+
+# Formatting Numbers
+
+```{r}
+#| echo: true
+ill_counts %>%
+  gt() %>%
+  fmt_number(
+    columns = n,
+    decimals = 0
+  )
+```
+
+# Table Titles
+
+```{r}
+#| echo: true
+ill_counts %>%
+  gt() %>%
+  tab_header(
+    title = "Illness Counts"
+  )
+```
+
+# Combining Steps
+
+```{r}
+#| echo: true
+ill_counts %>%
+  gt() %>%
+  cols_label(
+    ill = "Illness Status",
+    n = "Count"
+  ) %>%
+  tab_header(
+    title = "Illness Counts"
+  )
+```
+
+# Percentages
+
+```{r}
+#| echo: true
+ill_props <- oswego %>%
+  count(ill) %>%
+  mutate(
+    prop = n / sum(n)
+  )
+```
+
+# Format Percentages
+
+```{r}
+#| echo: true
+ill_props %>%
+  gt() %>%
+  fmt_percent(
+    columns = prop,
+    decimals = 1
+  )
+```
+
+# Day 2 Cheat Sheet
+
+## Core ggplot Functions
+
+```r
+ggplot()
+aes()
+
+geom_histogram()
+geom_bar()
+geom_col()
+geom_point()
+geom_boxplot()
+geom_density()
+
+facet_wrap()
+facet_grid()
+
+labs()
+
+theme_classic()
+theme_bw()
+
+coord_flip()
+```
+
+# Common Wrangling Used for Plots
+
+```r
+count()
+
+group_by()
+
+summarise()
+
+pivot_longer()
+
+mutate()
+
+filter()
+```
+
+# Table Functions
+
+```r
+gt()
+
+cols_label()
+
+fmt_number()
+
+fmt_percent()
+
+tab_header()
+```
+
+# gtsummary Functions
+
+```r
+tbl_summary()
+
+add_p()
+
+as_gt()
+```
+
+# Final Takeaways
+
+You should now be able to:
+
+- Build common statistical graphics
+- Interpret and customize plots
+- Debug common ggplot problems
+- Create gt tables
+- Communicate results visually and reproducibly
+
+# Looking Ahead
+
+The skills from Days 1 and 2 combine:
+
+```r
+Import Data
+→ Wrangle Data
+→ Visualize Data
+→ Summarize Results
+→ Communicate Findings
+```
+
+Questions?
+
+
