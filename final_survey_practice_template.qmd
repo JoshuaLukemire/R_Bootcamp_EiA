@@ -1,0 +1,422 @@
+---
+title: "Final Practice: Reproducible Survey Analysis"
+subtitle: "R Bootcamp"
+author: "Your Name"
+format:
+  html:
+    toc: true
+    toc-depth: 2
+    number-sections: true
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+# Background
+
+You are working with data from a synthetic public health survey. The survey was administered to residents in several counties after a possible community exposure event.
+
+The data are stored in three separate files:
+
+- `survey_respondents.csv`: one row per person in the respondent roster
+- `survey_health.csv`: health symptoms, care-seeking, and testing information
+- `survey_exposures.csv`: possible exposure information
+
+These files are intentionally separated so that you can practice joining related datasets.
+
+Some survey questions use skip logic. For example, respondents who did not report symptoms were not asked symptom follow-up questions. Respondents who did not eat at a restaurant were not asked restaurant follow-up questions.
+
+For those follow-up questions, missing values may occur for two different reasons:
+
+- `"not_asked"`: the question was skipped by design
+- `"non_response"`: the question was asked, but the respondent did not answer
+- `NA`: the question was answered
+
+Your goal is to create a short reproducible Quarto report that imports the data, checks the joins, summarizes key variables, investigates missingness, and communicates a few findings with tables and figures.
+
+# Setup
+
+```{r}
+library(tidyverse)
+library(here)
+library(gt)
+library(gtsummary)
+```
+
+# 1. Import the data
+
+Read the three survey files from the `Data` folder.
+
+```{r}
+respondents <- read_csv(
+  here("Data", "survey_respondents.csv")
+)
+
+health <- read_csv(
+  here("Data", "survey_health.csv")
+)
+
+exposures <- read_csv(
+  here("Data", "survey_exposures.csv")
+)
+```
+
+## Question 1.1
+
+How many rows and columns are in each dataset?
+
+```{r}
+# Use dim(), nrow(), ncol(), or glimpse() here
+
+```
+
+**Write your interpretation here:**
+
+> 
+
+## Question 1.2
+
+What does one row represent in each dataset?
+
+**Write your answer here:**
+
+> 
+
+# 2. Inspect the data
+
+Before joining datasets, inspect the variable names and data structures.
+
+```{r}
+# Inspect each dataset
+
+```
+
+## Question 2.1
+
+What variable appears to link the three datasets together?
+
+**Write your answer here:**
+
+> 
+
+## Question 2.2
+
+Which variables are logical, categorical, numeric, or dates?
+
+**Write your notes here:**
+
+> 
+
+# 3. Check overlap across files
+
+Not everyone completed every survey component. Use joins to identify respondents who appear in one file but not another.
+
+## Question 3.1
+
+Which respondents are in the roster but missing from the health survey?
+
+```{r}
+# Use anti_join()
+
+```
+
+**Write your interpretation here:**
+
+> 
+
+## Question 3.2
+
+Which respondents are in the roster but missing from the exposure survey?
+
+```{r}
+# Use anti_join()
+
+```
+
+**Write your interpretation here:**
+
+> 
+
+## Question 3.3
+
+How many respondents completed all three survey components?
+
+```{r}
+# One approach:
+# respondents %>%
+#   inner_join(health, by = "respondent_id") %>%
+#   inner_join(exposures, by = "respondent_id") %>%
+#   nrow()
+
+```
+
+**Write your interpretation here:**
+
+> 
+
+# 4. Create an analysis dataset
+
+Create one dataset that starts with the respondent roster and attaches health and exposure information.
+
+```{r}
+survey <- respondents %>%
+  left_join(health, by = "respondent_id") %>%
+  left_join(exposures, by = "respondent_id")
+```
+
+## Question 4.1
+
+How many rows are in the joined dataset? Is this what you expected?
+
+```{r}
+# Check number of rows
+
+```
+
+**Write your interpretation here:**
+
+> 
+
+## Question 4.2
+
+Why might `left_join()` be a reasonable choice here?
+
+**Write your answer here:**
+
+> 
+
+# 5. Basic respondent summaries
+
+Summarize the respondent roster.
+
+## Question 5.1
+
+How many respondents are in each county?
+
+```{r}
+# Count respondents by county
+
+```
+
+## Question 5.2
+
+What is the age distribution of respondents?
+
+```{r}
+# Summarize age using mean, median, range, etc.
+
+```
+
+## Question 5.3
+
+Create a figure showing the age distribution.
+
+```{r}
+# Create a histogram of age
+
+```
+
+**Write 1–2 sentences interpreting the figure:**
+
+> 
+
+# 6. Health outcomes
+
+## Question 6.1
+
+What proportion of respondents reported symptoms?
+
+```{r}
+# Since had_symptoms is TRUE/FALSE, mean(had_symptoms, na.rm = TRUE) gives a proportion
+
+```
+
+**Write your interpretation here:**
+
+> 
+
+## Question 6.2
+
+Among respondents who reported symptoms, which symptoms were most common?
+
+```{r}
+# One possible approach:
+# survey %>%
+#   filter(had_symptoms) %>%
+#   summarise(
+#     fever = mean(fever, na.rm = TRUE),
+#     cough = mean(cough, na.rm = TRUE),
+#     nausea = mean(nausea, na.rm = TRUE),
+#     diarrhea = mean(diarrhea, na.rm = TRUE)
+#   )
+
+```
+
+**Write your interpretation here:**
+
+> 
+
+## Question 6.3
+
+Create a plot of symptom frequencies among symptomatic respondents.
+
+```{r}
+# Hint:
+# 1. Filter to had_symptoms == TRUE
+# 2. Pivot fever, cough, nausea, diarrhea into long format
+# 3. Keep rows where symptom value is TRUE
+# 4. Count symptom
+# 5. Plot with geom_col()
+
+```
+
+**Write 1–2 sentences interpreting the figure:**
+
+> 
+
+# 7. Missingness and skip logic
+
+Some follow-up questions are missing because they were not asked. Others are missing because of nonresponse.
+
+## Question 7.1
+
+For the fever question, how many missing values are due to `not_asked` versus `non_response`?
+
+```{r}
+# Count fever_missing_reason
+
+```
+
+**Write your interpretation here:**
+
+> 
+
+## Question 7.2
+
+Repeat this for restaurant name missingness.
+
+```{r}
+# Count restaurant_name_missing_reason
+
+```
+
+**Write your interpretation here:**
+
+> 
+
+## Question 7.3
+
+Why is it important to distinguish `not_asked` from `non_response`?
+
+**Write your answer here:**
+
+> 
+
+# 8. Exposure summaries
+
+## Question 8.1
+
+What proportion of respondents attended the event, ate at a restaurant, drank tap water, or had contact with a sick person?
+
+```{r}
+# Summarize exposure variables using mean(..., na.rm = TRUE)
+
+```
+
+**Write your interpretation here:**
+
+> 
+
+## Question 8.2
+
+Create a plot showing exposure frequencies.
+
+```{r}
+# Hint:
+# Pivot attended_event, ate_restaurant, drank_tap_water,
+# and contact_with_sick_person into long format.
+# Then count exposures where value is TRUE.
+
+```
+
+**Write 1–2 sentences interpreting the figure:**
+
+> 
+
+# 9. Health outcomes by exposure
+
+Choose one exposure and compare symptom reporting between exposed and unexposed respondents.
+
+## Question 9.1
+
+Compare the proportion with symptoms by restaurant exposure.
+
+```{r}
+# Group by ate_restaurant and summarize mean(had_symptoms, na.rm = TRUE)
+
+```
+
+**Write your interpretation here:**
+
+> 
+
+## Question 9.2
+
+Create a figure showing symptom proportion by restaurant exposure.
+
+```{r}
+# Create a summarized dataset first, then plot with geom_col()
+
+```
+
+**Write 1–2 sentences interpreting the figure:**
+
+> 
+
+# 10. Summary table
+
+Create a descriptive table comparing respondents with and without symptoms.
+
+```{r}
+# Try this:
+# survey %>%
+#   select(age, sex, county, attended_event, ate_restaurant,
+#          drank_tap_water, contact_with_sick_person, had_symptoms) %>%
+#   tbl_summary(by = had_symptoms)
+
+```
+
+
+# 12. Optional challenge
+
+Create one polished figure and one polished table that you would include in a short report.
+
+## Figure
+
+```{r}
+# Your polished figure here
+
+```
+
+## Table
+
+```{r}
+# Your polished table here
+
+```
+
+# Wrap-up
+
+In this exercise, you practiced:
+
+- Importing data
+- Inspecting data
+- Joining files
+- Checking unmatched records
+- Working with skip-logic missingness
+- Summarizing logical variables
+- Pivoting survey questions
+- Creating plots
+- Creating tables
+- Writing a reproducible Quarto report
