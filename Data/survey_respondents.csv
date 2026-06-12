@@ -1,0 +1,151 @@
+respondent_id,county,age,sex,survey_date,recruitment_source
+R0001,Cobb,63,Female,2026-06-03,Community event
+R0002,Gwinnett,59,Male,2026-06-10,Phone
+R0003,Fulton,47,Female,2026-06-06,Phone
+R0004,Fulton,70,Female,2026-06-08,Clinic
+R0005,Fulton,59,Male,2026-06-13,Phone
+R0006,Gwinnett,31,Male,2026-06-09,Clinic
+R0007,DeKalb,38,Male,2026-06-07,Phone
+R0008,DeKalb,78,Male,2026-06-09,Clinic
+R0009,Fulton,31,Male,2026-06-02,Phone
+R0010,Fulton,18,Female,2026-06-02,Community event
+R0011,Fulton,55,Female,2026-06-06,Clinic
+R0012,Cobb,18,Female,2026-06-05,Phone
+R0013,Gwinnett,63,Female,2026-06-13,Phone
+R0014,Gwinnett,47,Female,2026-06-11,Email
+R0015,Cobb,32,Female,2026-06-12,Email
+R0016,Cobb,37,Male,2026-06-10,Phone
+R0017,Cobb,41,Male,2026-06-10,Email
+R0018,Clayton,60,Male,2026-06-01,Phone
+R0019,Fulton,39,Male,2026-06-08,Phone
+R0020,Fulton,39,Male,2026-06-04,Phone
+R0021,Cobb,48,Female,2026-06-05,Email
+R0022,DeKalb,18,Male,2026-06-06,Community event
+R0023,Cobb,73,Female,2026-06-01,Email
+R0024,Fulton,53,Female,2026-06-13,Email
+R0025,Fulton,41,Female,2026-06-13,Community event
+R0026,Fulton,41,Female,2026-06-03,Email
+R0027,Fulton,33,Male,2026-06-07,Phone
+R0028,Fulton,62,Male,2026-06-01,Phone
+R0029,Fulton,73,Male,2026-06-13,Community event
+R0030,Fulton,32,Male,2026-06-01,Phone
+R0031,Fulton,28,Female,2026-06-04,Clinic
+R0032,Cobb,38,Male,2026-06-13,Phone
+R0033,Clayton,46,Female,2026-06-06,Email
+R0034,DeKalb,60,Male,2026-06-08,Clinic
+R0035,Fulton,51,Female,2026-06-02,Email
+R0036,DeKalb,18,Female,2026-06-11,Clinic
+R0037,Fulton,38,Male,2026-06-03,Email
+R0038,Fulton,26,Male,2026-06-10,Community event
+R0039,Cobb,47,Female,2026-06-05,Clinic
+R0040,Cobb,54,Male,2026-06-13,Email
+R0041,Clayton,40,Male,2026-06-09,Clinic
+R0042,Fulton,49,Female,2026-06-08,Email
+R0043,DeKalb,29,Female,2026-06-05,Email
+R0044,Fulton,77,Female,2026-06-14,Phone
+R0045,Fulton,51,Male,2026-06-10,Clinic
+R0046,Fulton,49,Male,2026-06-01,Phone
+R0047,DeKalb,51,Female,2026-06-07,Phone
+R0048,Fulton,29,Male,2026-06-12,Clinic
+R0049,Gwinnett,45,Male,2026-06-03,Phone
+R0050,DeKalb,18,Male,2026-06-13,Email
+R0051,DeKalb,57,Female,2026-06-12,Clinic
+R0052,DeKalb,41,Male,2026-06-14,Clinic
+R0053,Gwinnett,42,Male,2026-06-03,Phone
+R0054,Fulton,54,Female,2026-06-08,Phone
+R0055,Gwinnett,41,Female,2026-06-12,Phone
+R0056,Fulton,36,Male,2026-06-11,Phone
+R0057,Fulton,41,Male,2026-06-14,Clinic
+R0058,DeKalb,36,Female,2026-06-10,Email
+R0059,Fulton,52,Male,2026-06-14,Email
+R0060,Cobb,64,Male,2026-06-09,Phone
+R0061,DeKalb,43,Female,2026-06-01,Email
+R0062,Fulton,30,Female,2026-06-11,Phone
+R0063,DeKalb,46,Female,2026-06-09,Phone
+R0064,DeKalb,51,Female,2026-06-14,Phone
+R0065,Fulton,43,Female,2026-06-08,Community event
+R0066,DeKalb,33,Male,2026-06-08,Phone
+R0067,DeKalb,18,Female,2026-06-02,Community event
+R0068,Cobb,32,Male,2026-06-07,Email
+R0069,Fulton,57,Female,2026-06-10,Phone
+R0070,DeKalb,42,Female,2026-06-11,Email
+R0071,Cobb,35,Female,2026-06-14,Clinic
+R0072,Fulton,34,Female,2026-06-02,Clinic
+R0073,Gwinnett,43,Male,2026-06-10,Email
+R0074,DeKalb,45,Male,2026-06-04,Clinic
+R0075,Clayton,39,Female,2026-06-09,Clinic
+R0076,Fulton,33,Female,2026-06-02,Clinic
+R0077,Clayton,63,Female,2026-06-08,Phone
+R0078,Fulton,44,Female,2026-06-01,Clinic
+R0079,DeKalb,37,Female,2026-06-12,Phone
+R0080,Gwinnett,45,Male,2026-06-03,Clinic
+R0081,Fulton,53,Female,2026-06-07,Email
+R0082,Cobb,49,Male,2026-06-06,Clinic
+R0083,DeKalb,49,Male,2026-06-14,Phone
+R0084,DeKalb,49,Male,2026-06-12,Phone
+R0085,DeKalb,55,Female,2026-06-09,Phone
+R0086,Fulton,31,Female,2026-06-03,Phone
+R0087,Fulton,31,Female,2026-06-02,Email
+R0088,Gwinnett,23,Male,2026-06-13,Community event
+R0089,Fulton,31,Male,2026-06-09,Phone
+R0090,Gwinnett,28,Male,2026-06-01,Phone
+R0091,Gwinnett,34,Male,2026-06-07,Clinic
+R0092,Gwinnett,35,Male,2026-06-02,Community event
+R0093,DeKalb,39,Female,2026-06-14,Phone
+R0094,Gwinnett,23,Female,2026-06-10,Phone
+R0095,Fulton,64,Female,2026-06-06,Clinic
+R0096,Gwinnett,31,Male,2026-06-09,Phone
+R0097,DeKalb,44,Male,2026-06-09,Email
+R0098,DeKalb,44,Male,2026-06-05,Email
+R0099,Fulton,42,Male,2026-06-02,Clinic
+R0100,Clayton,26,Male,2026-06-06,Email
+R0101,Cobb,42,Male,2026-06-10,Clinic
+R0102,Cobb,54,Female,2026-06-03,Email
+R0103,DeKalb,41,Female,2026-06-10,Clinic
+R0104,DeKalb,43,Male,2026-06-13,Email
+R0105,DeKalb,75,Male,2026-06-06,Community event
+R0106,Fulton,47,Male,2026-06-04,Email
+R0107,Cobb,46,Female,2026-06-05,Phone
+R0108,Cobb,46,Female,2026-06-09,Community event
+R0109,DeKalb,44,Female,2026-06-06,Clinic
+R0110,Fulton,64,Male,2026-06-05,Clinic
+R0111,Cobb,21,Male,2026-06-04,Email
+R0112,Cobb,50,Female,2026-06-04,Email
+R0113,Gwinnett,56,Female,2026-06-08,Phone
+R0114,Fulton,38,Male,2026-06-02,Clinic
+R0115,Cobb,41,Male,2026-06-02,Community event
+R0116,Fulton,23,Male,2026-06-08,Community event
+R0117,Fulton,27,Male,2026-06-10,Phone
+R0118,Cobb,81,Male,2026-06-12,Phone
+R0119,Cobb,69,Male,2026-06-03,Phone
+R0120,Clayton,32,Female,2026-06-02,Clinic
+R0121,Gwinnett,55,Female,2026-06-04,Community event
+R0122,Cobb,50,Female,2026-06-11,Community event
+R0123,Gwinnett,46,Female,2026-06-12,Phone
+R0124,Fulton,43,Female,2026-06-03,Phone
+R0125,Gwinnett,18,Male,2026-06-12,Phone
+R0126,DeKalb,51,Female,2026-06-03,Community event
+R0127,DeKalb,52,Male,2026-06-06,Clinic
+R0128,Fulton,54,Male,2026-06-05,Clinic
+R0129,Fulton,29,Female,2026-06-09,Clinic
+R0130,Cobb,41,Female,2026-06-04,Phone
+R0131,Cobb,42,Female,2026-06-13,Community event
+R0132,Clayton,37,Male,2026-06-10,Community event
+R0133,DeKalb,24,Female,2026-06-02,Email
+R0134,Cobb,21,Male,2026-06-04,Clinic
+R0135,Cobb,41,Male,2026-06-08,Phone
+R0136,Gwinnett,42,Male,2026-06-12,Email
+R0137,Gwinnett,30,Male,2026-06-03,Phone
+R0138,Clayton,34,Male,2026-06-02,Email
+R0139,DeKalb,29,Male,2026-06-08,Phone
+R0140,Clayton,67,Male,2026-06-04,Phone
+R0141,Gwinnett,72,Male,2026-06-11,Community event
+R0142,Fulton,55,Female,2026-06-07,Phone
+R0143,Gwinnett,42,Male,2026-06-14,Phone
+R0144,Fulton,50,Female,2026-06-02,Phone
+R0145,Fulton,46,Male,2026-06-09,Email
+R0146,Fulton,40,Male,2026-06-04,Phone
+R0147,DeKalb,18,Female,2026-06-14,Email
+R0148,Fulton,57,Female,2026-06-07,Email
+R0149,DeKalb,69,Female,2026-06-14,Community event
+R0150,DeKalb,42,Female,2026-06-07,Email

@@ -1,0 +1,137 @@
+respondent_id,attended_event,event_food,event_food_missing_reason,ate_restaurant,restaurant_name,restaurant_name_missing_reason,restaurant_meals,restaurant_meals_missing_reason,drank_tap_water,tap_water_source,tap_water_source_missing_reason,contact_with_sick_person
+R0001,TRUE,Chicken,NA,FALSE,NA,not_asked,NA,not_asked,TRUE,Home,NA,TRUE
+R0002,TRUE,Chicken,NA,TRUE,Restaurant A,NA,3,NA,TRUE,Restaurant,NA,TRUE
+R0003,FALSE,NA,not_asked,FALSE,NA,not_asked,NA,not_asked,TRUE,Home,NA,TRUE
+R0004,TRUE,Sandwiches,NA,FALSE,NA,not_asked,NA,not_asked,TRUE,Restaurant,NA,TRUE
+R0006,FALSE,NA,not_asked,TRUE,Restaurant B,NA,3,NA,FALSE,NA,not_asked,FALSE
+R0007,TRUE,Sandwiches,NA,FALSE,NA,not_asked,NA,not_asked,TRUE,Home,NA,FALSE
+R0008,FALSE,NA,not_asked,TRUE,Restaurant C,NA,2,NA,FALSE,NA,not_asked,TRUE
+R0009,TRUE,Sandwiches,NA,TRUE,Restaurant C,NA,4,NA,TRUE,Work,NA,FALSE
+R0010,TRUE,Salad,NA,FALSE,NA,not_asked,NA,not_asked,TRUE,Home,NA,TRUE
+R0011,TRUE,Fruit,NA,TRUE,Restaurant A,NA,2,NA,TRUE,Home,NA,TRUE
+R0012,TRUE,Dessert,NA,TRUE,Restaurant A,NA,6,NA,TRUE,Work,NA,FALSE
+R0013,TRUE,Fruit,NA,TRUE,Restaurant B,NA,NA,non_response,FALSE,NA,not_asked,FALSE
+R0014,TRUE,Chicken,NA,FALSE,NA,not_asked,NA,not_asked,TRUE,Home,NA,TRUE
+R0015,TRUE,Sandwiches,NA,FALSE,NA,not_asked,NA,not_asked,TRUE,Work,NA,FALSE
+R0016,TRUE,Chicken,NA,TRUE,Restaurant B,NA,NA,non_response,TRUE,Home,NA,TRUE
+R0017,TRUE,Dessert,NA,FALSE,NA,not_asked,NA,not_asked,FALSE,NA,not_asked,TRUE
+R0018,TRUE,Sandwiches,NA,TRUE,Restaurant A,NA,3,NA,TRUE,Home,NA,FALSE
+R0019,TRUE,Fruit,NA,FALSE,NA,not_asked,NA,not_asked,FALSE,NA,not_asked,FALSE
+R0020,FALSE,NA,not_asked,TRUE,Restaurant E,NA,3,NA,TRUE,Restaurant,NA,FALSE
+R0021,FALSE,NA,not_asked,FALSE,NA,not_asked,NA,not_asked,FALSE,NA,not_asked,FALSE
+R0022,TRUE,Dessert,NA,FALSE,NA,not_asked,NA,not_asked,FALSE,NA,not_asked,FALSE
+R0023,TRUE,Dessert,NA,FALSE,NA,not_asked,NA,not_asked,FALSE,NA,not_asked,FALSE
+R0024,TRUE,Chicken,NA,FALSE,NA,not_asked,NA,not_asked,TRUE,Other,NA,TRUE
+R0025,TRUE,Chicken,NA,TRUE,NA,non_response,NA,non_response,FALSE,NA,not_asked,FALSE
+R0026,FALSE,NA,not_asked,FALSE,NA,not_asked,NA,not_asked,TRUE,Home,NA,TRUE
+R0027,FALSE,NA,not_asked,TRUE,Restaurant D,NA,1,NA,TRUE,Home,NA,FALSE
+R0028,TRUE,Salad,NA,TRUE,Restaurant B,NA,2,NA,FALSE,NA,not_asked,FALSE
+R0029,FALSE,NA,not_asked,TRUE,Restaurant A,NA,2,NA,FALSE,NA,not_asked,TRUE
+R0030,TRUE,Chicken,NA,TRUE,Restaurant C,NA,2,NA,TRUE,Home,NA,FALSE
+R0031,TRUE,Chicken,NA,TRUE,Restaurant A,NA,4,NA,TRUE,Home,NA,FALSE
+R0032,TRUE,Fruit,NA,TRUE,Restaurant C,NA,NA,non_response,TRUE,Home,NA,FALSE
+R0033,FALSE,NA,not_asked,TRUE,Restaurant B,NA,1,NA,FALSE,NA,not_asked,FALSE
+R0034,FALSE,NA,not_asked,FALSE,NA,not_asked,NA,not_asked,FALSE,NA,not_asked,FALSE
+R0035,TRUE,Salad,NA,FALSE,NA,not_asked,NA,not_asked,FALSE,NA,not_asked,FALSE
+R0036,TRUE,Sandwiches,NA,TRUE,Restaurant D,NA,2,NA,TRUE,Work,NA,FALSE
+R0037,TRUE,Dessert,NA,FALSE,NA,not_asked,NA,not_asked,FALSE,NA,not_asked,FALSE
+R0038,FALSE,NA,not_asked,TRUE,Restaurant E,NA,1,NA,FALSE,NA,not_asked,FALSE
+R0039,TRUE,NA,non_response,TRUE,Restaurant E,NA,2,NA,TRUE,Home,NA,TRUE
+R0040,TRUE,Dessert,NA,TRUE,Restaurant D,NA,1,NA,FALSE,NA,not_asked,TRUE
+R0041,TRUE,NA,non_response,FALSE,NA,not_asked,NA,not_asked,TRUE,Home,NA,FALSE
+R0042,FALSE,NA,not_asked,FALSE,NA,not_asked,NA,not_asked,FALSE,NA,not_asked,FALSE
+R0043,TRUE,Chicken,NA,TRUE,Restaurant E,NA,2,NA,TRUE,Restaurant,NA,FALSE
+R0044,TRUE,Chicken,NA,FALSE,NA,not_asked,NA,not_asked,FALSE,NA,not_asked,FALSE
+R0045,TRUE,Salad,NA,TRUE,NA,non_response,4,NA,FALSE,NA,not_asked,FALSE
+R0046,TRUE,Salad,NA,FALSE,NA,not_asked,NA,not_asked,TRUE,NA,non_response,TRUE
+R0048,FALSE,NA,not_asked,FALSE,NA,not_asked,NA,not_asked,FALSE,NA,not_asked,FALSE
+R0050,TRUE,Chicken,NA,TRUE,Restaurant E,NA,1,NA,FALSE,NA,not_asked,FALSE
+R0051,FALSE,NA,not_asked,FALSE,NA,not_asked,NA,not_asked,TRUE,Home,NA,TRUE
+R0052,FALSE,NA,not_asked,FALSE,NA,not_asked,NA,not_asked,FALSE,NA,not_asked,FALSE
+R0053,TRUE,Dessert,NA,FALSE,NA,not_asked,NA,not_asked,TRUE,Work,NA,FALSE
+R0054,FALSE,NA,not_asked,FALSE,NA,not_asked,NA,not_asked,FALSE,NA,not_asked,FALSE
+R0055,FALSE,NA,not_asked,FALSE,NA,not_asked,NA,not_asked,TRUE,Work,NA,FALSE
+R0057,FALSE,NA,not_asked,TRUE,Restaurant D,NA,1,NA,TRUE,Work,NA,TRUE
+R0058,TRUE,Salad,NA,TRUE,Restaurant D,NA,NA,non_response,TRUE,NA,non_response,TRUE
+R0059,FALSE,NA,not_asked,TRUE,Restaurant E,NA,2,NA,TRUE,Home,NA,FALSE
+R0060,TRUE,Salad,NA,TRUE,Restaurant D,NA,1,NA,FALSE,NA,not_asked,FALSE
+R0061,FALSE,NA,not_asked,TRUE,Restaurant A,NA,1,NA,TRUE,Home,NA,FALSE
+R0062,FALSE,NA,not_asked,FALSE,NA,not_asked,NA,not_asked,TRUE,Restaurant,NA,FALSE
+R0063,TRUE,Chicken,NA,TRUE,Restaurant C,NA,4,NA,FALSE,NA,not_asked,FALSE
+R0064,FALSE,NA,not_asked,TRUE,Restaurant C,NA,1,NA,TRUE,Home,NA,FALSE
+R0065,TRUE,Sandwiches,NA,FALSE,NA,not_asked,NA,not_asked,TRUE,Restaurant,NA,FALSE
+R0066,FALSE,NA,not_asked,TRUE,Restaurant C,NA,6,NA,TRUE,Home,NA,FALSE
+R0067,TRUE,Salad,NA,TRUE,NA,non_response,2,NA,FALSE,NA,not_asked,FALSE
+R0068,FALSE,NA,not_asked,TRUE,Restaurant D,NA,NA,non_response,TRUE,Restaurant,NA,TRUE
+R0069,FALSE,NA,not_asked,FALSE,NA,not_asked,NA,not_asked,TRUE,Home,NA,FALSE
+R0070,TRUE,Chicken,NA,TRUE,Restaurant C,NA,1,NA,TRUE,Home,NA,TRUE
+R0071,TRUE,Chicken,NA,TRUE,Restaurant D,NA,NA,non_response,TRUE,Other,NA,FALSE
+R0072,FALSE,NA,not_asked,FALSE,NA,not_asked,NA,not_asked,FALSE,NA,not_asked,FALSE
+R0073,FALSE,NA,not_asked,FALSE,NA,not_asked,NA,not_asked,TRUE,Work,NA,TRUE
+R0074,TRUE,Fruit,NA,TRUE,Restaurant E,NA,1,NA,FALSE,NA,not_asked,FALSE
+R0075,FALSE,NA,not_asked,FALSE,NA,not_asked,NA,not_asked,FALSE,NA,not_asked,TRUE
+R0076,FALSE,NA,not_asked,TRUE,Restaurant E,NA,3,NA,TRUE,Home,NA,FALSE
+R0077,FALSE,NA,not_asked,TRUE,Restaurant D,NA,1,NA,FALSE,NA,not_asked,FALSE
+R0078,TRUE,Sandwiches,NA,FALSE,NA,not_asked,NA,not_asked,TRUE,Restaurant,NA,FALSE
+R0079,TRUE,Sandwiches,NA,TRUE,Restaurant D,NA,2,NA,TRUE,School,NA,TRUE
+R0080,TRUE,Sandwiches,NA,TRUE,Restaurant D,NA,1,NA,FALSE,NA,not_asked,TRUE
+R0081,TRUE,Sandwiches,NA,FALSE,NA,not_asked,NA,not_asked,FALSE,NA,not_asked,FALSE
+R0082,FALSE,NA,not_asked,TRUE,Restaurant C,NA,1,NA,FALSE,NA,not_asked,TRUE
+R0084,FALSE,NA,not_asked,FALSE,NA,not_asked,NA,not_asked,TRUE,Home,NA,TRUE
+R0085,FALSE,NA,not_asked,TRUE,Restaurant D,NA,3,NA,FALSE,NA,not_asked,FALSE
+R0087,FALSE,NA,not_asked,TRUE,Restaurant D,NA,4,NA,TRUE,Home,NA,TRUE
+R0088,TRUE,Salad,NA,FALSE,NA,not_asked,NA,not_asked,FALSE,NA,not_asked,FALSE
+R0089,TRUE,Salad,NA,TRUE,Restaurant A,NA,1,NA,TRUE,NA,non_response,TRUE
+R0090,TRUE,Chicken,NA,TRUE,Restaurant A,NA,2,NA,TRUE,Home,NA,TRUE
+R0091,TRUE,Salad,NA,TRUE,NA,non_response,4,NA,TRUE,Work,NA,FALSE
+R0092,TRUE,Dessert,NA,TRUE,Restaurant C,NA,1,NA,TRUE,Work,NA,FALSE
+R0093,FALSE,NA,not_asked,TRUE,Restaurant D,NA,1,NA,TRUE,Restaurant,NA,FALSE
+R0096,FALSE,NA,not_asked,FALSE,NA,not_asked,NA,not_asked,TRUE,Work,NA,TRUE
+R0097,FALSE,NA,not_asked,FALSE,NA,not_asked,NA,not_asked,FALSE,NA,not_asked,FALSE
+R0098,TRUE,Chicken,NA,TRUE,Restaurant A,NA,4,NA,FALSE,NA,not_asked,FALSE
+R0099,FALSE,NA,not_asked,TRUE,Restaurant D,NA,3,NA,TRUE,School,NA,FALSE
+R0100,FALSE,NA,not_asked,FALSE,NA,not_asked,NA,not_asked,TRUE,Work,NA,FALSE
+R0101,FALSE,NA,not_asked,TRUE,Restaurant D,NA,2,NA,TRUE,Home,NA,FALSE
+R0102,FALSE,NA,not_asked,FALSE,NA,not_asked,NA,not_asked,FALSE,NA,not_asked,FALSE
+R0103,FALSE,NA,not_asked,TRUE,Restaurant A,NA,NA,non_response,TRUE,Home,NA,FALSE
+R0104,TRUE,Sandwiches,NA,TRUE,Restaurant A,NA,2,NA,TRUE,School,NA,TRUE
+R0106,FALSE,NA,not_asked,FALSE,NA,not_asked,NA,not_asked,FALSE,NA,not_asked,FALSE
+R0107,TRUE,Salad,NA,FALSE,NA,not_asked,NA,not_asked,TRUE,Home,NA,FALSE
+R0108,FALSE,NA,not_asked,FALSE,NA,not_asked,NA,not_asked,TRUE,Work,NA,FALSE
+R0109,FALSE,NA,not_asked,TRUE,Restaurant C,NA,1,NA,TRUE,Work,NA,FALSE
+R0110,FALSE,NA,not_asked,FALSE,NA,not_asked,NA,not_asked,FALSE,NA,not_asked,TRUE
+R0111,TRUE,Chicken,NA,TRUE,Restaurant D,NA,2,NA,TRUE,Work,NA,FALSE
+R0112,TRUE,Dessert,NA,TRUE,Restaurant D,NA,1,NA,FALSE,NA,not_asked,FALSE
+R0113,TRUE,Chicken,NA,FALSE,NA,not_asked,NA,not_asked,FALSE,NA,not_asked,TRUE
+R0114,FALSE,NA,not_asked,FALSE,NA,not_asked,NA,not_asked,TRUE,Home,NA,FALSE
+R0115,TRUE,Fruit,NA,TRUE,Restaurant B,NA,3,NA,TRUE,Work,NA,FALSE
+R0116,TRUE,NA,non_response,FALSE,NA,not_asked,NA,not_asked,TRUE,NA,non_response,FALSE
+R0117,TRUE,Chicken,NA,FALSE,NA,not_asked,NA,not_asked,TRUE,Work,NA,FALSE
+R0118,TRUE,Chicken,NA,FALSE,NA,not_asked,NA,not_asked,FALSE,NA,not_asked,FALSE
+R0119,TRUE,Dessert,NA,FALSE,NA,not_asked,NA,not_asked,TRUE,Home,NA,FALSE
+R0120,FALSE,NA,not_asked,FALSE,NA,not_asked,NA,not_asked,TRUE,Restaurant,NA,FALSE
+R0121,FALSE,NA,not_asked,FALSE,NA,not_asked,NA,not_asked,TRUE,Home,NA,FALSE
+R0122,FALSE,NA,not_asked,TRUE,Restaurant A,NA,1,NA,FALSE,NA,not_asked,FALSE
+R0123,TRUE,NA,non_response,FALSE,NA,not_asked,NA,not_asked,FALSE,NA,not_asked,FALSE
+R0124,TRUE,Sandwiches,NA,TRUE,Restaurant E,NA,1,NA,TRUE,Restaurant,NA,TRUE
+R0127,FALSE,NA,not_asked,TRUE,Restaurant B,NA,1,NA,TRUE,School,NA,FALSE
+R0128,FALSE,NA,not_asked,FALSE,NA,not_asked,NA,not_asked,FALSE,NA,not_asked,TRUE
+R0129,FALSE,NA,not_asked,TRUE,Restaurant E,NA,1,NA,TRUE,Home,NA,FALSE
+R0131,FALSE,NA,not_asked,FALSE,NA,not_asked,NA,not_asked,FALSE,NA,not_asked,FALSE
+R0132,TRUE,Fruit,NA,TRUE,Restaurant E,NA,5,NA,TRUE,Work,NA,TRUE
+R0133,FALSE,NA,not_asked,FALSE,NA,not_asked,NA,not_asked,TRUE,Work,NA,TRUE
+R0135,FALSE,NA,not_asked,FALSE,NA,not_asked,NA,not_asked,TRUE,Work,NA,FALSE
+R0136,TRUE,Salad,NA,FALSE,NA,not_asked,NA,not_asked,TRUE,Home,NA,TRUE
+R0137,FALSE,NA,not_asked,TRUE,NA,non_response,1,NA,FALSE,NA,not_asked,TRUE
+R0138,FALSE,NA,not_asked,TRUE,Restaurant D,NA,3,NA,TRUE,Restaurant,NA,FALSE
+R0139,TRUE,Chicken,NA,TRUE,Restaurant E,NA,4,NA,TRUE,Home,NA,FALSE
+R0140,FALSE,NA,not_asked,TRUE,Restaurant A,NA,2,NA,FALSE,NA,not_asked,FALSE
+R0142,FALSE,NA,not_asked,FALSE,NA,not_asked,NA,not_asked,FALSE,NA,not_asked,TRUE
+R0143,FALSE,NA,not_asked,FALSE,NA,not_asked,NA,not_asked,FALSE,NA,not_asked,FALSE
+R0144,FALSE,NA,not_asked,TRUE,Restaurant C,NA,3,NA,FALSE,NA,not_asked,TRUE
+R0145,TRUE,Salad,NA,TRUE,NA,non_response,2,NA,FALSE,NA,not_asked,FALSE
+R0146,FALSE,NA,not_asked,TRUE,Restaurant B,NA,2,NA,FALSE,NA,not_asked,FALSE
+R0147,TRUE,Sandwiches,NA,FALSE,NA,not_asked,NA,not_asked,TRUE,Other,NA,FALSE
+R0148,FALSE,NA,not_asked,FALSE,NA,not_asked,NA,not_asked,TRUE,Home,NA,FALSE
+R0149,TRUE,Sandwiches,NA,TRUE,Restaurant D,NA,1,NA,TRUE,Home,NA,FALSE
+R0150,FALSE,NA,not_asked,FALSE,NA,not_asked,NA,not_asked,TRUE,School,NA,FALSE
